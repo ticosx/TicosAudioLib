@@ -27,28 +27,28 @@ class AudioOutputI2S : public AudioOutput
   public:
 #if defined(ESP32) || defined(ESP8266)
     AudioOutputI2S(int port=0, int output_mode=EXTERNAL_I2S, int dma_buf_count = 8, int use_apll=APLL_DISABLE);
-    bool SetPinout(int bclkPin, int wclkPin, int doutPin);
+    bool setPinout(int bclkPin, int wclkPin, int doutPin);
     enum : int { APLL_AUTO = -1, APLL_ENABLE = 1, APLL_DISABLE = 0 };
     enum : int { EXTERNAL_I2S = 0, INTERNAL_DAC = 1, INTERNAL_PDM = 2 };
 #elif defined(ARDUINO_ARCH_RP2040)
     AudioOutputI2S(long sampleRate = 44100, pin_size_t sck = 26, pin_size_t data = 28);
 #endif
     virtual ~AudioOutputI2S() override;
-    virtual bool SetRate(int hz) override;
-    virtual bool SetBitsPerSample(int bits) override;
-    virtual bool SetChannels(int channels) override;
+    virtual bool setRate(int hz) override;
+    virtual bool setBitsPerSample(int bits) override;
+    virtual bool setChannels(int channels) override;
     virtual bool begin() override { return begin(true); }
-    virtual bool ConsumeSample(int16_t sample[2]) override;
+    virtual bool consumeSample(int16_t sample[2]) override;
     virtual void flush() override;
     virtual bool stop() override;
     
     bool begin(bool txDAC);
-    bool SetOutputModeMono(bool mono);  // Force mono output no matter the input
-    bool SetLsbJustified(bool lsbJustified);  // Allow supporting non-I2S chips, e.g. PT8211 
+    bool setOutputModeMono(bool mono);  // Force mono output no matter the input
+    bool setLsbJustified(bool lsbJustified);  // Allow supporting non-I2S chips, e.g. PT8211 
 
   protected:
-    bool SetPinout();
-    virtual int AdjustI2SRate(int hz) { return hz; }
+    bool setPinout();
+    virtual int adjustI2SRate(int hz) { return hz; }
     uint8_t portNo;
     int output_mode;
     bool mono;

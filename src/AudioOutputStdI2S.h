@@ -1,6 +1,6 @@
 /*
-  AudioOutputBuffer
-  Adds additional bufferspace to the output chain
+  AudioOutputStdI2S
+  Base class for an I2S output port, which is defined at https://docs.arduino.cc/learn/built-in-libraries/i2s
   
   Copyright (C) 2017  Earle F. Philhower, III
 
@@ -18,32 +18,32 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef _AUDIOOUTPUTBUFFER_H
-#define _AUDIOOUTPUTBUFFER_H
+#pragma once
 
 #include "AudioOutput.h"
 
-class AudioOutputBuffer : public AudioOutput
+class AudioOutputStdI2S : public AudioOutput
 {
   public:
-    AudioOutputBuffer(int bufferSizeSamples, AudioOutput *dest);
-    virtual ~AudioOutputBuffer() override;
+#if defined(ESP32) || defined(ESP8266)
+    AudioOutputStdI2S();
+    bool setAllPins(int sckPin, int fsPin, int sdPin, int outSdPin, int inSdPin);
+#endif
+    virtual ~AudioOutputStdI2S() override;
     virtual bool setRate(int hz) override;
     virtual bool setBitsPerSample(int bits) override;
     virtual bool setChannels(int channels) override;
     virtual bool begin() override;
     virtual bool consumeSample(int16_t sample[2]) override;
+    virtual void flush() override;
     virtual bool stop() override;
-    
+    virtual bool loop() override;
+
   protected:
-    AudioOutput *sink;
-    int buffSize;
-    int16_t *leftSample;
-    int16_t *rightSample;
-    int writePtr;
-    int readPtr;
-    bool filled;
+    bool i2sOn;
+    uint8_t *buffer = NULL;
+    int16_t dataIndex = 0;
+    size_t bufferLength = 0;
+    size_t transferData();
+
 };
-
-#endif
-

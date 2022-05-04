@@ -187,7 +187,7 @@ bool AudioOutputULP::begin()
   return true;
 }
 
-bool AudioOutputULP::ConsumeSample(int16_t sample[2])
+bool AudioOutputULP::consumeSample(int16_t sample[2])
 {
   int16_t ms[2];
   ms[0] = sample[0];

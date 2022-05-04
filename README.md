@@ -1,4 +1,7 @@
-# ESP8266Audio - supports ESP8266 & ESP32 & Raspberry Pi RP2040[![Gitter](https://badges.gitter.im/ESP8266Audio/community.svg)](https://gitter.im/ESP8266Audio/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge) 
+# Ticos Audio Lib - supports ESP8266 & ESP32 & Raspberry Pi RP2040
+
+This library is based on https://github.com/earlephilhower/ESP8266Audio.git.
+
 Arduino library for parsing and decoding MOD, WAV, MP3, FLAC, MIDI, AAC, and RTTL files and playing them on an I2S DAC or even using a software-simulated delta-sigma DAC with dynamic 32x-128x oversampling.
 
 ESP8266 is fully supported and most mature, but ESP32 is also mostly there with built-in DAC as well as external ones.
@@ -19,7 +22,7 @@ Opus, OGG, and OpusFile are from [Xiph.org](https://xiph.org) with the Xiph lice
 ## Neat Things People Have Done With ESP8266Audio
 If you have a neat use for this library, [I'd love to hear about it](mailto:earlephilhower@yahoo.com)!
 
-My personal use of the ESP8266Audio library is only to drive a 3D-printed, network-time-setting alarm clock for my kids which can play an MP3 instead of a bell to wake them up, called [Psychoclock](https://github.com/earlephilhower/psychoclock).
+My personal use of the Ticos Audio library is only to drive a 3D-printed, network-time-setting alarm clock for my kids which can play an MP3 instead of a bell to wake them up, called [Psychoclock](https://github.com/earlephilhower/psychoclock).
 
 Harald Sattler has built a neat German [word clock with MP3 alarm](http://www.harald-sattler.de/html/mini-wecker.htm). Detailed discussion on the process and models are included.
 
@@ -269,6 +272,4 @@ Thanks to the authors of StellaPlayer and libMAD for releasing their code freely
 
 Also, big thanks to @tueddy for getting the initial ESP32 porting into the tree!
 
--Earle F. Philhower, III
- earlephilhower@yahoo.com
-
+And thanks to Earle F. Philhower, III, the original author!

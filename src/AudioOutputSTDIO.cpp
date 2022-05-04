@@ -52,7 +52,7 @@ bool AudioOutputSTDIO::begin()
   return true;
 }
 
-bool AudioOutputSTDIO::ConsumeSample(int16_t sample[2])
+bool AudioOutputSTDIO::consumeSample(int16_t sample[2])
 {
   static int avail = 100;
   if (!(--avail)) {

@@ -45,19 +45,19 @@ AudioOutputFilterBiquad::AudioOutputFilterBiquad(int type, float Fc, float Q, fl
 
 AudioOutputFilterBiquad::~AudioOutputFilterBiquad() {}
 
-bool AudioOutputFilterBiquad::SetRate(int hz)
+bool AudioOutputFilterBiquad::setRate(int hz)
 {
-  return sink->SetRate(hz);
+  return sink->setRate(hz);
 }
 
-bool AudioOutputFilterBiquad::SetBitsPerSample(int bits)
+bool AudioOutputFilterBiquad::setBitsPerSample(int bits)
 {
-  return sink->SetBitsPerSample(bits);
+  return sink->setBitsPerSample(bits);
 }
 
-bool AudioOutputFilterBiquad::SetChannels(int channels)
+bool AudioOutputFilterBiquad::setChannels(int channels)
 {
-  return sink->SetChannels(channels);
+  return sink->setChannels(channels);
 }
 
 bool AudioOutputFilterBiquad::SetGain(float gain)
@@ -218,7 +218,7 @@ bool AudioOutputFilterBiquad::begin()
   return sink->begin();
 }
 
-bool AudioOutputFilterBiquad::ConsumeSample(int16_t sample[2])
+bool AudioOutputFilterBiquad::consumeSample(int16_t sample[2])
 {
 
   int32_t leftSample = (sample[LEFTCHANNEL] << BQ_SHIFT) / 2;
@@ -236,7 +236,7 @@ bool AudioOutputFilterBiquad::ConsumeSample(int16_t sample[2])
   out[LEFTCHANNEL] = (int16_t)(leftOutput >> BQ_SHIFT);
   out[RIGHTCHANNEL] = (int16_t)(rightOutput >> BQ_SHIFT);
 
-  return sink->ConsumeSample(out);
+  return sink->consumeSample(out);
 }
 
 bool AudioOutputFilterBiquad::stop()

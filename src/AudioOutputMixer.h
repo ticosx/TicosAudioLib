@@ -32,11 +32,11 @@ class AudioOutputMixerStub : public AudioOutput
   public:
     AudioOutputMixerStub(AudioOutputMixer *sink, int id);
     virtual ~AudioOutputMixerStub() override;
-    virtual bool SetRate(int hz) override;
-    virtual bool SetBitsPerSample(int bits) override;
-    virtual bool SetChannels(int channels) override;
+    virtual bool setRate(int hz) override;
+    virtual bool setBitsPerSample(int bits) override;
+    virtual bool setChannels(int channels) override;
     virtual bool begin() override;
-    virtual bool ConsumeSample(int16_t sample[2]) override;
+    virtual bool consumeSample(int16_t sample[2]) override;
     virtual bool stop() override;
 
   protected:
@@ -50,11 +50,11 @@ class AudioOutputMixer : public AudioOutput
   public:
     AudioOutputMixer(int samples, AudioOutput *sink);
     virtual ~AudioOutputMixer() override;
-    virtual bool SetRate(int hz) override;
-    virtual bool SetBitsPerSample(int bits) override;
-    virtual bool SetChannels(int channels) override;
+    virtual bool setRate(int hz) override;
+    virtual bool setBitsPerSample(int bits) override;
+    virtual bool setChannels(int channels) override;
     virtual bool begin() override;
-    virtual bool ConsumeSample(int16_t sample[2]) override;
+    virtual bool consumeSample(int16_t sample[2]) override;
     virtual bool stop() override;
     virtual bool loop() override; // Send all existing samples we can to I2S
 
@@ -64,11 +64,11 @@ class AudioOutputMixer : public AudioOutput
   friend class AudioOutputMixerStub;
   private:
     void RemoveInput(int id);
-    bool SetRate(int hz, int id);
-    bool SetBitsPerSample(int bits, int id);
-    bool SetChannels(int channels, int id);
+    bool setRate(int hz, int id);
+    bool setBitsPerSample(int bits, int id);
+    bool setChannels(int channels, int id);
     bool begin(int id);
-    bool ConsumeSample(int16_t sample[2], int id);
+    bool consumeSample(int16_t sample[2], int id);
     bool stop(int id);
 
   protected:

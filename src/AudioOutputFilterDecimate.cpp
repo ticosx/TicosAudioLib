@@ -48,22 +48,22 @@ AudioOutputFilterDecimate::~AudioOutputFilterDecimate()
   free(tap);
 }
 
-bool AudioOutputFilterDecimate::SetRate(int hz)
+bool AudioOutputFilterDecimate::setRate(int hz)
 {
   // Modify input frequency to account for decimation
   hz *= den;
   hz /= num;
-  return sink->SetRate(hz);
+  return sink->setRate(hz);
 }
 
-bool AudioOutputFilterDecimate::SetBitsPerSample(int bits)
+bool AudioOutputFilterDecimate::setBitsPerSample(int bits)
 {
-  return sink->SetBitsPerSample(bits);
+  return sink->setBitsPerSample(bits);
 }
 
-bool AudioOutputFilterDecimate::SetChannels(int channels)
+bool AudioOutputFilterDecimate::setChannels(int channels)
 {
-  return sink->SetChannels(channels);
+  return sink->setChannels(channels);
 }
 
 bool AudioOutputFilterDecimate::SetGain(float gain)
@@ -76,7 +76,7 @@ bool AudioOutputFilterDecimate::begin()
   return sink->begin();
 }
 
-bool AudioOutputFilterDecimate::ConsumeSample(int16_t sample[2])
+bool AudioOutputFilterDecimate::consumeSample(int16_t sample[2])
 {
   // Store the data samples in history always
   hist[LEFTCHANNEL][idx] = sample[LEFTCHANNEL];
@@ -101,7 +101,7 @@ bool AudioOutputFilterDecimate::ConsumeSample(int16_t sample[2])
     int16_t out[2];
     out[LEFTCHANNEL] = accL >> 16;
     out[RIGHTCHANNEL] = accR >> 16;
-    return sink->ConsumeSample(out);
+    return sink->consumeSample(out);
   }
   return true; // Nothing to do here...
 }

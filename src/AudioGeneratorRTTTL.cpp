@@ -71,7 +71,7 @@ bool AudioGeneratorRTTTL::loop()
   // Try and send out the remainder of the existing note, one per loop()
   if (ttlSamplesPerWaveFP10 == 0) { // Mute
     int16_t mute[2] = {0, 0};
-    while ((samplesSent < ttlSamples) && output->ConsumeSample(mute)) {
+    while ((samplesSent < ttlSamples) && output->consumeSample(mute)) {
       samplesSent++;
     }
   } else {
@@ -80,7 +80,7 @@ bool AudioGeneratorRTTTL::loop()
       int rem = samplesSentFP10 % ttlSamplesPerWaveFP10;
       int16_t val = (rem > ttlSamplesPerWaveFP10/2) ? 8192:-8192;
       int16_t s[2] = { val, val };
-      if (!output->ConsumeSample(s)) goto done;
+      if (!output->consumeSample(s)) goto done;
       samplesSent++;
     }
   }
@@ -284,9 +284,9 @@ bool AudioGeneratorRTTTL::begin(AudioFileSource *source, AudioOutput *output)
 
   if (!ParseHeader()) return false;
 
-  if (!output->SetRate( rate )) return false;
-  if (!output->SetBitsPerSample( 16 )) return false;
-  if (!output->SetChannels( 2 )) return false;
+  if (!output->setRate( rate )) return false;
+  if (!output->setBitsPerSample( 16 )) return false;
+  if (!output->setChannels( 2 )) return false;
   if (!output->begin()) return false;
 
   running = true;

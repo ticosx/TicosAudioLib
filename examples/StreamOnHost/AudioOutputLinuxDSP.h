@@ -38,7 +38,7 @@ class AudioOutputNullSlow : public AudioOutput
     ~AudioOutputNullSlow() {};
     virtual bool begin() { samples = 0; startms = millis(); return true; }
 
-    virtual bool ConsumeSample(int16_t sample[2]) {
+    virtual bool consumeSample(int16_t sample[2]) {
 
       if (fd < 0) {
         fd = open("/dev/dsp", O_RDWR);

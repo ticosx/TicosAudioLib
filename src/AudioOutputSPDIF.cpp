@@ -109,7 +109,7 @@ AudioOutputSPDIF::AudioOutputSPDIF(int dout_pin, int port, int dma_buf_count)
     return;
   }
   i2s_zero_dma_buffer((i2s_port_t)portNo);
-  SetPinout(I2S_PIN_NO_CHANGE, I2S_PIN_NO_CHANGE, dout_pin);
+  setPinout(I2S_PIN_NO_CHANGE, I2S_PIN_NO_CHANGE, dout_pin);
   rate_multiplier = 2; // 2x32bit words
 #elif defined(ESP8266)
   (void) dout_pin;
@@ -126,7 +126,7 @@ AudioOutputSPDIF::AudioOutputSPDIF(int dout_pin, int port, int dma_buf_count)
   frame_num = 0;
   SetGain(1.0);
   hertz = 0;
-  SetRate(44100);
+  setRate(44100);
 }
 
 AudioOutputSPDIF::~AudioOutputSPDIF()
@@ -143,7 +143,7 @@ AudioOutputSPDIF::~AudioOutputSPDIF()
   i2sOn = false;
 }
 
-bool AudioOutputSPDIF::SetPinout(int bclk, int wclk, int dout)
+bool AudioOutputSPDIF::setPinout(int bclk, int wclk, int dout)
 {
 #if defined(ESP32)
   i2s_pin_config_t pins = {
@@ -165,13 +165,13 @@ bool AudioOutputSPDIF::SetPinout(int bclk, int wclk, int dout)
 #endif
 }
 
-bool AudioOutputSPDIF::SetRate(int hz)
+bool AudioOutputSPDIF::setRate(int hz)
 {
   if (!i2sOn) return false;
   if (hz < 32000) return false;
   if (hz == this->hertz) return true;
   this->hertz = hz;
-  int adjustedHz = AdjustI2SRate(hz);
+  int adjustedHz = adjustI2SRate(hz);
 #if defined(ESP32)
   if (i2s_set_sample_rates((i2s_port_t)portNo, adjustedHz) == ESP_OK) {
     if (adjustedHz == 88200) {
@@ -190,25 +190,25 @@ bool AudioOutputSPDIF::SetRate(int hz)
   return true;
 }
 
-bool AudioOutputSPDIF::SetBitsPerSample(int bits)
+bool AudioOutputSPDIF::setBitsPerSample(int bits)
 {
   if ( (bits != 16) && (bits != 8) ) return false;
   this->bps = bits;
   return true;
 }
 
-bool AudioOutputSPDIF::SetChannels(int channels)
+bool AudioOutputSPDIF::setChannels(int channels)
 {
   if ( (channels < 1) || (channels > 2) ) return false;
   this->channels = channels;
   return true;
 }
 
-bool AudioOutputSPDIF::SetOutputModeMono(bool mono)
+bool AudioOutputSPDIF::setOutputModeMono(bool mono)
 {
   this->mono = mono;
   // Just use the left channel for mono
-  if (mono) SetChannels(1);
+  if (mono) setChannels(1);
   return true;
 }
 
@@ -217,7 +217,7 @@ bool AudioOutputSPDIF::begin()
   return true;
 }
 
-bool AudioOutputSPDIF::ConsumeSample(int16_t sample[2])
+bool AudioOutputSPDIF::consumeSample(int16_t sample[2])
 {
   if (!i2sOn) return true; // Sink the data
   int16_t ms[2];

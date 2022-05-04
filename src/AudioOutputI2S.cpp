@@ -47,18 +47,19 @@ AudioOutputI2S::AudioOutputI2S(int port, int output_mode, int dma_buf_count, int
   channels = 2;
   hertz = 44100;
   bclkPin = 26;
-  wclkPin = 25;
-  doutPin = 22;
+  wclkPin = 33;
+  doutPin = 25;
   SetGain(1.0);
 }
 
-bool AudioOutputI2S::SetPinout()
+bool AudioOutputI2S::setPinout()
 {
   #ifdef ESP32
     if (output_mode == INTERNAL_DAC || output_mode == INTERNAL_PDM)
       return false; // Not allowed
 
     i2s_pin_config_t pins = {
+        .mck_io_num = GPIO_NUM_0,
         .bck_io_num = bclkPin,
         .ws_io_num = wclkPin,
         .data_out_num = doutPin,
@@ -73,13 +74,13 @@ bool AudioOutputI2S::SetPinout()
   #endif
 }
 
-bool AudioOutputI2S::SetPinout(int bclk, int wclk, int dout)
+bool AudioOutputI2S::setPinout(int bclk, int wclk, int dout)
 {
   bclkPin = bclk;
   wclkPin = wclk;
   doutPin = dout;
   if (i2sOn)
-    return SetPinout();
+    return setPinout();
 
   return true;
 }
@@ -112,16 +113,16 @@ AudioOutputI2S::~AudioOutputI2S()
   i2sOn = false;
 }
 
-bool AudioOutputI2S::SetRate(int hz)
+bool AudioOutputI2S::setRate(int hz)
 {
   // TODO - have a list of allowable rates from constructor, check them
   this->hertz = hz;
   if (i2sOn)
   {
   #ifdef ESP32
-      i2s_set_sample_rates((i2s_port_t)portNo, AdjustI2SRate(hz));
+      i2s_set_sample_rates((i2s_port_t)portNo, adjustI2SRate(hz));
   #elif defined(ESP8266)
-      i2s_set_rate(AdjustI2SRate(hz));
+      i2s_set_rate(adjustI2SRate(hz));
   #elif defined(ARDUINO_ARCH_RP2040)
       I2S.setFrequency(hz);
   #endif
@@ -129,27 +130,27 @@ bool AudioOutputI2S::SetRate(int hz)
   return true;
 }
 
-bool AudioOutputI2S::SetBitsPerSample(int bits)
+bool AudioOutputI2S::setBitsPerSample(int bits)
 {
   if ( (bits != 16) && (bits != 8) ) return false;
   this->bps = bits;
   return true;
 }
 
-bool AudioOutputI2S::SetChannels(int channels)
+bool AudioOutputI2S::setChannels(int channels)
 {
   if ( (channels < 1) || (channels > 2) ) return false;
   this->channels = channels;
   return true;
 }
 
-bool AudioOutputI2S::SetOutputModeMono(bool mono)
+bool AudioOutputI2S::setOutputModeMono(bool mono)
 {
   this->mono = mono;
   return true;
 }
 
-bool AudioOutputI2S::SetLsbJustified(bool lsbJustified)
+bool AudioOutputI2S::setLsbJustified(bool lsbJustified)
 {
   this->lsb_justified = lsbJustified;
   return true;
@@ -231,7 +232,8 @@ bool AudioOutputI2S::begin(bool txDAC)
       if (output_mode == INTERNAL_DAC || output_mode == INTERNAL_PDM)
       {
 #if CONFIG_IDF_TARGET_ESP32
-        i2s_set_pin((i2s_port_t)portNo, NULL);
+        setPinout();
+        //i2s_set_pin((i2s_port_t)portNo, NULL);
         i2s_set_dac_mode(I2S_DAC_CHANNEL_BOTH_EN);
 #else
         return false;
@@ -239,7 +241,7 @@ bool AudioOutputI2S::begin(bool txDAC)
       }
       else
       {
-        SetPinout();
+        setPinout();
       }
       i2s_zero_dma_buffer((i2s_port_t)portNo);
     }
@@ -272,11 +274,11 @@ bool AudioOutputI2S::begin(bool txDAC)
     }
   #endif
   i2sOn = true;
-  SetRate(hertz); // Default
+  setRate(hertz); // Default
   return true;
 }
 
-bool AudioOutputI2S::ConsumeSample(int16_t sample[2])
+bool AudioOutputI2S::consumeSample(int16_t sample[2])
 {
 
   //return if we haven't called ::begin yet
@@ -328,7 +330,7 @@ void AudioOutputI2S::flush()
     int16_t samples[2] = {0x0, 0x0};
     for (int i = 0; i < buffersize; i++)
     {
-      while (!ConsumeSample(samples))
+      while (!consumeSample(samples))
       {
         delay(10);
       }

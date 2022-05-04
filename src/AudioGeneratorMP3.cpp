@@ -175,11 +175,11 @@ bool AudioGeneratorMP3::DecodeNextFrame()
 bool AudioGeneratorMP3::GetOneSample(int16_t sample[2])
 {
   if (synth->pcm.samplerate != lastRate) {
-    output->SetRate(synth->pcm.samplerate);
+    output->setRate(synth->pcm.samplerate);
     lastRate = synth->pcm.samplerate;
   }
   if (synth->pcm.channels != lastChannels) {
-    output->SetChannels(synth->pcm.channels);
+    output->setChannels(synth->pcm.channels);
     lastChannels = synth->pcm.channels;
   }
     
@@ -212,7 +212,7 @@ bool AudioGeneratorMP3::loop()
   if (!running) goto done; // Nothing to do here!
 
   // First, try and push in the stored sample.  If we can't, then punt and try later
-  if (!output->ConsumeSample(lastSample)) goto done; // Can't send, but no error detected
+  if (!output->consumeSample(lastSample)) goto done; // Can't send, but no error detected
 
   // Try and stuff the buffer one sample at a time
   do
@@ -248,7 +248,7 @@ retry:
       running = false;
       goto done;
     }
-  } while (running && output->ConsumeSample(lastSample));
+  } while (running && output->consumeSample(lastSample));
 
 done:
   file->loop();
@@ -273,8 +273,8 @@ bool AudioGeneratorMP3::begin(AudioFileSource *source, AudioOutput *output)
   // Reset error count from previous file
   unrecoverable = 0;
 
-  output->SetBitsPerSample(16); // Constant for MP3 decoder
-  output->SetChannels(2);
+  output->setBitsPerSample(16); // Constant for MP3 decoder
+  output->setChannels(2);
 
   if (!output->begin()) return false;
 

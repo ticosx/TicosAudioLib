@@ -63,9 +63,9 @@ bool AudioGeneratorOpus::begin(AudioFileSource *source, AudioOutput *output)
   output->begin();
 
   // These are fixed by Opus
-  output->SetRate(48000);
-  output->SetBitsPerSample(16);
-  output->SetChannels(2);
+  output->setRate(48000);
+  output->setBitsPerSample(16);
+  output->setChannels(2);
 
   running = true;
   return true;
@@ -76,7 +76,7 @@ bool AudioGeneratorOpus::loop()
 
   if (!running) goto done;
 
-  if (!output->ConsumeSample(lastSample)) goto done; // Try and send last buffered sample
+  if (!output->consumeSample(lastSample)) goto done; // Try and send last buffered sample
 
   do {
     if (buffPtr == buffLen) {
@@ -95,7 +95,7 @@ bool AudioGeneratorOpus::loop()
     lastSample[AudioOutput::LEFTCHANNEL] = buff[buffPtr] & 0xffff; 
     lastSample[AudioOutput::RIGHTCHANNEL] = buff[buffPtr+1] & 0xffff; 
     buffPtr += 2;
-  } while (running && output->ConsumeSample(lastSample));
+  } while (running && output->consumeSample(lastSample));
 
 done:
   file->loop();

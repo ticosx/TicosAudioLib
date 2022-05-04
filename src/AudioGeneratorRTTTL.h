@@ -35,7 +35,7 @@ class AudioGeneratorRTTTL : public AudioGenerator
     virtual bool loop() override;
     virtual bool stop() override;
     virtual bool isRunning() override;
-    void SetRate(uint16_t hz) { rate = hz; }
+    void setRate(uint16_t hz) { rate = hz; }
 
   private:
     bool SkipWhitespace();

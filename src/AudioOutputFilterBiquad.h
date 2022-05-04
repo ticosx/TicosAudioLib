@@ -43,12 +43,12 @@ class AudioOutputFilterBiquad : public AudioOutput
     AudioOutputFilterBiquad(AudioOutput *sink);
     AudioOutputFilterBiquad(int type, float Fc, float Q, float peakGain, AudioOutput *sink);
     virtual ~AudioOutputFilterBiquad() override;
-    virtual bool SetRate(int hz) override;
-    virtual bool SetBitsPerSample(int bits) override;
-    virtual bool SetChannels(int chan) override;
+    virtual bool setRate(int hz) override;
+    virtual bool setBitsPerSample(int bits) override;
+    virtual bool setChannels(int chan) override;
     virtual bool SetGain(float f) override;
     virtual bool begin() override;
-    virtual bool ConsumeSample(int16_t sample[2]) override;
+    virtual bool consumeSample(int16_t sample[2]) override;
     virtual bool stop() override;
 
   private:

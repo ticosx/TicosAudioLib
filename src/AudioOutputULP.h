@@ -42,7 +42,7 @@ class AudioOutputULP : public AudioOutput
     AudioOutputULP(int argActiveDACs=3) {if(argActiveDACs<1||argActiveDACs>2)argActiveDACs=3;activeDACs=argActiveDACs;stereoOutput=activeDACs==3;};
     ~AudioOutputULP() {};
     virtual bool begin() override;
-    virtual bool ConsumeSample(int16_t sample[2]) override;
+    virtual bool consumeSample(int16_t sample[2]) override;
     virtual bool stop() override;
     enum : int { DAC1 = 1, DAC2 = 2 };
   private:

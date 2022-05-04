@@ -52,7 +52,7 @@ bool AudioOutputSPIFFSWAV::begin()
   return true;
 }
 
-bool AudioOutputSPIFFSWAV::ConsumeSample(int16_t sample[2])
+bool AudioOutputSPIFFSWAV::consumeSample(int16_t sample[2])
 {
   for (int i=0; i<channels; i++) {
     if (bps == 8) {

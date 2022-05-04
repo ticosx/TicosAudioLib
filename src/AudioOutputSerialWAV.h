@@ -29,7 +29,7 @@ class AudioOutputSerialWAV : public AudioOutput
     AudioOutputSerialWAV() {};
     ~AudioOutputSerialWAV() {};
     virtual bool begin() override;
-    virtual bool ConsumeSample(int16_t sample[2]) override;
+    virtual bool consumeSample(int16_t sample[2]) override;
     virtual bool stop() override;
   private:
     int count;

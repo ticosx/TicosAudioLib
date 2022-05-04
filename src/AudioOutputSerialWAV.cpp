@@ -49,7 +49,7 @@ bool AudioOutputSerialWAV::begin()
   return true;
 }
 
-bool AudioOutputSerialWAV::ConsumeSample(int16_t sample[2])
+bool AudioOutputSerialWAV::consumeSample(int16_t sample[2])
 {
   if (++count == 200) {
     count = 0;

@@ -33,19 +33,19 @@ AudioOutputMixerStub::~AudioOutputMixerStub()
   parent->RemoveInput(id);
 }
 
-bool AudioOutputMixerStub::SetRate(int hz)
+bool AudioOutputMixerStub::setRate(int hz)
 {
-  return parent->SetRate(hz, id);
+  return parent->setRate(hz, id);
 }
 
-bool AudioOutputMixerStub::SetBitsPerSample(int bits)
+bool AudioOutputMixerStub::setBitsPerSample(int bits)
 {
-  return parent->SetBitsPerSample(bits, id);
+  return parent->setBitsPerSample(bits, id);
 }
 
-bool AudioOutputMixerStub::SetChannels(int channels)
+bool AudioOutputMixerStub::setChannels(int channels)
 {
-  return parent->SetChannels(channels, id);
+  return parent->setChannels(channels, id);
 }
 
 bool AudioOutputMixerStub::begin()
@@ -53,12 +53,12 @@ bool AudioOutputMixerStub::begin()
   return parent->begin(id);
 }
 
-bool AudioOutputMixerStub::ConsumeSample(int16_t sample[2])
+bool AudioOutputMixerStub::consumeSample(int16_t sample[2])
 {
   int16_t amp[2];
   amp[LEFTCHANNEL] = Amplify(sample[LEFTCHANNEL]);
   amp[RIGHTCHANNEL] = Amplify(sample[RIGHTCHANNEL]);
-  return parent->ConsumeSample(amp, id);
+  return parent->consumeSample(amp, id);
 }
 
 bool AudioOutputMixerStub::stop()
@@ -91,25 +91,25 @@ AudioOutputMixer::~AudioOutputMixer()
 
 
 // Most "standard" interfaces should fail, only MixerStub should be able to talk to us
-bool AudioOutputMixer::SetRate(int hz)
+bool AudioOutputMixer::setRate(int hz)
 {
   (void) hz;
   return false;
 }
 
-bool AudioOutputMixer::SetBitsPerSample(int bits)
+bool AudioOutputMixer::setBitsPerSample(int bits)
 {
   (void) bits;
   return false;
 }
 
-bool AudioOutputMixer::SetChannels(int channels)
+bool AudioOutputMixer::setChannels(int channels)
 {
   (void) channels;
   return false;
 }
 
-bool AudioOutputMixer::ConsumeSample(int16_t sample[2])
+bool AudioOutputMixer::consumeSample(int16_t sample[2])
 {
   (void) sample;
   return false;
@@ -127,22 +127,22 @@ bool AudioOutputMixer::stop()
 
 
 // TODO - actually ensure all samples are same speed, size, channels, rate
-bool AudioOutputMixer::SetRate(int hz, int id)
+bool AudioOutputMixer::setRate(int hz, int id)
 {
   (void) id;
-  return sink->SetRate(hz);
+  return sink->setRate(hz);
 }
 
-bool AudioOutputMixer::SetBitsPerSample(int bits, int id)
+bool AudioOutputMixer::setBitsPerSample(int bits, int id)
 {
   (void) id;
-  return sink->SetBitsPerSample(bits);
+  return sink->setBitsPerSample(bits);
 }
 
-bool AudioOutputMixer::SetChannels(int channels, int id)
+bool AudioOutputMixer::setChannels(int channels, int id)
 {
   (void) id;
-  return sink->SetChannels(channels);
+  return sink->setChannels(channels);
 }
 
 bool AudioOutputMixer::begin(int id)
@@ -207,7 +207,7 @@ bool AudioOutputMixer::loop()
       }
 //      s[LEFTCHANNEL] = Amplify(s[LEFTCHANNEL]);
 //      s[RIGHTCHANNEL] = Amplify(s[RIGHTCHANNEL]);
-      if (!sink->ConsumeSample(s)) {
+      if (!sink->consumeSample(s)) {
         break; // Can't stuff any more in I2S...
       }
       // Clear the accums and advance the pointer to next potential sample
@@ -219,7 +219,7 @@ bool AudioOutputMixer::loop()
   return true;
 }
 
-bool AudioOutputMixer::ConsumeSample(int16_t sample[2], int id)
+bool AudioOutputMixer::consumeSample(int16_t sample[2], int id)
 {
   loop(); // Send any pre-existing, completed I2S data we can fit
 

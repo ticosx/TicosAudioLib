@@ -514,9 +514,9 @@ bool AudioGeneratorMIDI::begin(AudioFileSource *src, AudioOutput *out)
   if (!g_tsf) return false;
   tsf_set_output (g_tsf, TSF_MONO, freq, -10 /* dB gain -10 */ );
 
-  if (!out->SetRate( freq )) return false;
-  if (!out->SetBitsPerSample( 16 )) return false;
-  if (!out->SetChannels( 1 )) return false;
+  if (!out->setRate( freq )) return false;
+  if (!out->setBitsPerSample( 16 )) return false;
+  if (!out->setChannels( 1 )) return false;
   if (!out->begin()) return false;
 
   output = out;
@@ -542,7 +542,7 @@ bool AudioGeneratorMIDI::loop()
   if (!running) goto done; // Nothing to do here!
 
   // First, try and push in the stored sample.  If we can't, then punt and try later
-  if (!output->ConsumeSample(lastSample)) goto done; // Can't send, but no error detected
+  if (!output->consumeSample(lastSample)) goto done; // Can't send, but no error detected
 
   // Try and stuff the buffer one sample at a time
   do {
@@ -577,7 +577,7 @@ play:
         goto play;
       }
     }
-  } while (running && output->ConsumeSample(lastSample));
+  } while (running && output->consumeSample(lastSample));
 
 done:
   file->loop();

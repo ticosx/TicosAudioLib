@@ -33,7 +33,7 @@ class AudioOutputSTDIO : public AudioOutput
     AudioOutputSTDIO() { filename = NULL; f = NULL; };
     ~AudioOutputSTDIO() { free(filename); };
     virtual bool begin() override;
-    virtual bool ConsumeSample(int16_t sample[2]) override;
+    virtual bool consumeSample(int16_t sample[2]) override;
     virtual bool stop() override;
     void SetFilename(const char *name);
 

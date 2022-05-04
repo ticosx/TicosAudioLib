@@ -151,7 +151,7 @@ bool AudioGeneratorAAC::loop()
       lastSample[0] = outSample[curSample*2];
       lastSample[1] = outSample[curSample*2 + 1];
     }
-    if (!output->ConsumeSample(lastSample)) goto done; // Can't send, but no error detected
+    if (!output->consumeSample(lastSample)) goto done; // Can't send, but no error detected
     validSamples--;
     curSample++;
   }
@@ -172,11 +172,11 @@ bool AudioGeneratorAAC::loop()
       AACFrameInfo fi;
       AACGetLastFrameInfo(hAACDecoder, &fi);
       if ((int)fi.sampRateOut != (int)lastRate) {
-        output->SetRate(fi.sampRateOut);
+        output->setRate(fi.sampRateOut);
         lastRate = fi.sampRateOut;
       }
       if (fi.nChans != lastChannels) {
-        output->SetChannels(fi.nChans);
+        output->setChannels(fi.nChans);
         lastChannels = fi.nChans;
       }
       curSample = 0;
@@ -204,7 +204,7 @@ bool AudioGeneratorAAC::begin(AudioFileSource *source, AudioOutput *output)
   output->begin();
   
   // AAC always comes out at 16 bits
-  output->SetBitsPerSample(16);
+  output->setBitsPerSample(16);
  
 
   memset(buff, 0, buffLen);

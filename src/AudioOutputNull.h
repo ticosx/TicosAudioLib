@@ -29,7 +29,7 @@ class AudioOutputNull : public AudioOutput
     AudioOutputNull() {};
     ~AudioOutputNull() {};
     virtual bool begin() { samples = 0; startms = millis(); return true; }
-    virtual bool ConsumeSample(int16_t sample[2]) { (void)sample; samples++; return true; }
+    virtual bool consumeSample(int16_t sample[2]) { (void)sample; samples++; return true; }
     virtual bool stop() { endms = millis(); return true; };
     unsigned long GetMilliseconds() { return endms - startms; }
     int GetSamples() { return samples; }

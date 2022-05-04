@@ -88,9 +88,9 @@ bool AudioGeneratorTalkie::begin(AudioFileSource *source, AudioOutput *output)
     running = false;
   }
   
-  if (!output->SetRate( 8000 )) return false;
-  if (!output->SetBitsPerSample( 16 )) return false;
-  if (!output->SetChannels( 2 )) return false;
+  if (!output->setRate( 8000 )) return false;
+  if (!output->setBitsPerSample( 16 )) return false;
+  if (!output->setChannels( 2 )) return false;
   if (!output->begin()) return false;
 
 
@@ -128,7 +128,7 @@ bool AudioGeneratorTalkie::loop()
     for ( ; frameLeft; frameLeft--) {
       auto res = genOneSample();
       int16_t r[2] = {res, res};
-      if (!output->ConsumeSample(r)) break;
+      if (!output->consumeSample(r)) break;
     }
   }
   

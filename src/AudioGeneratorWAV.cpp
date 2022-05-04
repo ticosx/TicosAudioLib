@@ -79,7 +79,7 @@ bool AudioGeneratorWAV::loop()
   if (!running) goto done; // Nothing to do here!
 
   // First, try and push in the stored sample.  If we can't, then punt and try later
-  if (!output->ConsumeSample(lastSample)) goto done; // Can't send, but no error detected
+  if (!output->consumeSample(lastSample)) goto done; // Can't send, but no error detected
 
   // Try and stuff the buffer one sample at a time
   do
@@ -102,7 +102,7 @@ bool AudioGeneratorWAV::loop()
         lastSample[AudioOutput::RIGHTCHANNEL] = 0;
       }
     }
-  } while (running && output->ConsumeSample(lastSample));
+  } while (running && output->consumeSample(lastSample));
 
 done:
   file->loop();
@@ -293,16 +293,16 @@ bool AudioGeneratorWAV::begin(AudioFileSource *source, AudioOutput *output)
     return false;
   }
 
-  if (!output->SetRate( sampleRate )) {
-    Serial.printf_P(PSTR("AudioGeneratorWAV::begin: failed to SetRate in output\n"));
+  if (!output->setRate( sampleRate )) {
+    Serial.printf_P(PSTR("AudioGeneratorWAV::begin: failed to setRate in output\n"));
     return false;
   }
-  if (!output->SetBitsPerSample( bitsPerSample )) {
-    Serial.printf_P(PSTR("AudioGeneratorWAV::begin: failed to SetBitsPerSample in output\n"));
+  if (!output->setBitsPerSample( bitsPerSample )) {
+    Serial.printf_P(PSTR("AudioGeneratorWAV::begin: failed to setBitsPerSample in output\n"));
     return false;
   }
-  if (!output->SetChannels( channels )) {
-    Serial.printf_P(PSTR("AudioGeneratorWAV::begin: failed to SetChannels in output\n"));
+  if (!output->setChannels( channels )) {
+    Serial.printf_P(PSTR("AudioGeneratorWAV::begin: failed to setChannels in output\n"));
     return false;
   }
   if (!output->begin()) {

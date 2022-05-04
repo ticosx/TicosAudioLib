@@ -85,7 +85,7 @@ bool AudioGeneratorMOD::loop()
   if (!running) goto done; // Easy-peasy
 
   // First, try and push in the stored sample.  If we can't, then punt and try later
-  if (!output->ConsumeSample(lastSample)) goto done; // FIFO full, wait...
+  if (!output->consumeSample(lastSample)) goto done; // FIFO full, wait...
 
   // Now advance enough times to fill the i2s buffer
   do {
@@ -99,7 +99,7 @@ bool AudioGeneratorMOD::loop()
     }
     GetSample( lastSample );
     mixerTick--;
-  } while (output->ConsumeSample(lastSample));
+  } while (output->consumeSample(lastSample));
 
 done:
   file->loop();
@@ -121,9 +121,9 @@ bool AudioGeneratorMOD::begin(AudioFileSource *source, AudioOutput *out)
   if (!file->isOpen()) return false; // Can't read the file!
 
   // Set the output values properly
-  if (!output->SetRate(sampleRate)) return false;
-  if (!output->SetBitsPerSample(16)) return false;
-  if (!output->SetChannels(2)) return false;
+  if (!output->setRate(sampleRate)) return false;
+  if (!output->setBitsPerSample(16)) return false;
+  if (!output->setChannels(2)) return false;
   if (!output->begin()) return false;
 
   UpdateAmiga();

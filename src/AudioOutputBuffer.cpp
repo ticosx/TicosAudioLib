@@ -37,19 +37,19 @@ AudioOutputBuffer::~AudioOutputBuffer()
   free(rightSample);
 }
 
-bool AudioOutputBuffer::SetRate(int hz)
+bool AudioOutputBuffer::setRate(int hz)
 {
-  return sink->SetRate(hz);
+  return sink->setRate(hz);
 }
 
-bool AudioOutputBuffer::SetBitsPerSample(int bits)
+bool AudioOutputBuffer::setBitsPerSample(int bits)
 {
-  return sink->SetBitsPerSample(bits);
+  return sink->setBitsPerSample(bits);
 }
 
-bool AudioOutputBuffer::SetChannels(int channels)
+bool AudioOutputBuffer::setChannels(int channels)
 {
-  return sink->SetChannels(channels);
+  return sink->setChannels(channels);
 }
 
 bool AudioOutputBuffer::begin()
@@ -58,13 +58,13 @@ bool AudioOutputBuffer::begin()
   return sink->begin();
 }
 
-bool AudioOutputBuffer::ConsumeSample(int16_t sample[2])
+bool AudioOutputBuffer::consumeSample(int16_t sample[2])
 {
   // First, try and fill I2S...
   if (filled) {
     while (readPtr != writePtr) {
       int16_t s[2] = {leftSample[readPtr], rightSample[readPtr]};
-      if (!sink->ConsumeSample(s)) break; // Can't stuff any more in I2S...
+      if (!sink->consumeSample(s)) break; // Can't stuff any more in I2S...
       readPtr = (readPtr + 1) % buffSize;
     }
   }

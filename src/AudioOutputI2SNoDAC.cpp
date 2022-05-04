@@ -72,7 +72,7 @@ bool AudioOutputI2SNoDAC::SetOversampling(int os) {
   if (os < 32) return false;  // Nothing under 32 allowed
 
   oversample = os;
-  return SetRate(hertz);
+  return setRate(hertz);
 }
 
 void AudioOutputI2SNoDAC::DeltaSigma(int16_t sample[2], uint32_t dsBuff[8])
@@ -106,7 +106,7 @@ void AudioOutputI2SNoDAC::DeltaSigma(int16_t sample[2], uint32_t dsBuff[8])
   }
 }
 
-bool AudioOutputI2SNoDAC::ConsumeSample(int16_t sample[2])
+bool AudioOutputI2SNoDAC::consumeSample(int16_t sample[2])
 {
   int16_t ms[2];
   ms[0] = sample[0];

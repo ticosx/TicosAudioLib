@@ -50,22 +50,22 @@ class AudioOutputSPDIF : public AudioOutput
   public:
     AudioOutputSPDIF(int dout_pin=SPDIF_OUT_PIN_DEFAULT, int port=0, int dma_buf_count = DMA_BUF_COUNT_DEFAULT);
     virtual ~AudioOutputSPDIF() override;
-    bool SetPinout(int bclkPin, int wclkPin, int doutPin);
-    virtual bool SetRate(int hz) override;
-    virtual bool SetBitsPerSample(int bits) override;
-    virtual bool SetChannels(int channels) override;
+    bool setPinout(int bclkPin, int wclkPin, int doutPin);
+    virtual bool setRate(int hz) override;
+    virtual bool setBitsPerSample(int bits) override;
+    virtual bool setChannels(int channels) override;
     virtual bool begin() override;
-    virtual bool ConsumeSample(int16_t sample[2]) override;
+    virtual bool consumeSample(int16_t sample[2]) override;
     virtual bool stop() override;
 
-    bool SetOutputModeMono(bool mono);  // Force mono output no matter the input
+    bool setOutputModeMono(bool mono);  // Force mono output no matter the input
 
     const uint32_t VUCP_PREAMBLE_B = 0xCCE80000; // 11001100 11101000
     const uint32_t VUCP_PREAMBLE_M = 0xCCE20000; // 11001100 11100010
     const uint32_t VUCP_PREAMBLE_W = 0xCCE40000; // 11001100 11100100
 
   protected:
-    virtual inline int AdjustI2SRate(int hz) { return rate_multiplier * hz; }
+    virtual inline int adjustI2SRate(int hz) { return rate_multiplier * hz; }
     uint8_t portNo;
     bool mono;
     bool i2sOn;
