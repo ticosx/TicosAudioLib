@@ -20,6 +20,7 @@
 
 
 #include "AudioGeneratorWAV.h"
+#include "Log.h"
 
 AudioGeneratorWAV::AudioGeneratorWAV()
 {
@@ -40,7 +41,6 @@ AudioGeneratorWAV::~AudioGeneratorWAV()
 
 bool AudioGeneratorWAV::stop()
 {
-  if (!running) return true;
   running = false;
   free(buff);
   buff = NULL;
@@ -86,22 +86,23 @@ bool AudioGeneratorWAV::loop()
   {
     if (bitsPerSample == 8) {
       uint8_t l, r;
-      if (!GetBufferedData(1, &l)) stop();
+      if (!GetBufferedData(1, &l)) running = false;
       if (channels == 2) {
-        if (!GetBufferedData(1, &r)) stop();
+        if (!GetBufferedData(1, &r)) running = false;
       } else {
         r = 0;
       }
       lastSample[AudioOutput::LEFTCHANNEL] = l;
       lastSample[AudioOutput::RIGHTCHANNEL] = r;
     } else if (bitsPerSample == 16) {
-      if (!GetBufferedData(2, &lastSample[AudioOutput::LEFTCHANNEL])) stop();
+      if (!GetBufferedData(2, &lastSample[AudioOutput::LEFTCHANNEL])) running = false;
       if (channels == 2) {
-        if (!GetBufferedData(2, &lastSample[AudioOutput::RIGHTCHANNEL])) stop();
+        if (!GetBufferedData(2, &lastSample[AudioOutput::RIGHTCHANNEL])) running = false;
       } else {
         lastSample[AudioOutput::RIGHTCHANNEL] = 0;
       }
     }
+    lastSample[AudioOutput::RIGHTCHANNEL] = 0;
   } while (running && output->consumeSample(lastSample));
 
 done:
@@ -305,6 +306,7 @@ bool AudioGeneratorWAV::begin(AudioFileSource *source, AudioOutput *output)
     Serial.printf_P(PSTR("AudioGeneratorWAV::begin: failed to setChannels in output\n"));
     return false;
   }
+  
   if (!output->begin()) {
     Serial.printf_P(PSTR("AudioGeneratorWAV::begin: output's begin did not return true\n"));
     return false;

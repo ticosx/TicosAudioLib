@@ -36,7 +36,7 @@ class AudioOutput
     virtual bool begin() { return false; };
     typedef enum { LEFTCHANNEL=0, RIGHTCHANNEL=1 } SampleIndex;
     virtual bool consumeSample(int16_t sample[2]) { (void)sample; return false; }
-    virtual uint16_t ConsumeSamples(int16_t *samples, uint16_t count)
+    virtual uint16_t consumeSamples(int16_t *samples, uint16_t count)
     {
       for (uint16_t i=0; i<count; i++) {
         if (!consumeSample(samples)) return i;

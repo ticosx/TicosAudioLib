@@ -80,6 +80,9 @@ bool AudioOutputStdI2S::setBitsPerSample(int bits)
 bool AudioOutputStdI2S::setChannels(int channels)
 {
   if ( (channels < 1) || (channels > 2) ) return false;
+  if (channels == 1) {
+    warn(AUDIO_OUTPUT_STD_I2S_TAG, "I2S is fixed 2 channels");
+  }
   this->channels = channels;
   return true;
 }
@@ -108,7 +111,7 @@ bool AudioOutputStdI2S::begin()
   if(!buffer)
   {
     //Malloc buffer
-    bufferLength = I2S.getBufferSize() * (bps / 8);
+    bufferLength = I2S.getBufferSize() * (bps / 8) * 2; //At least now Arduino I2S API dones't support set channels, so fixed 2 here
 #ifdef ESP32
     buffer = (uint8_t*) ps_malloc(bufferLength);
 #else
@@ -148,14 +151,24 @@ bool AudioOutputStdI2S::consumeSample(int16_t sample[2])
       }
     }
     //Put new data into buffer
-    int16_t ms[2];
+    if(bps == 8){
 
-    ms[0] = sample[0];
-    ms[1] = sample[1];
-    MakeSampleStereo16( ms );
-    
-    memcpy(&buffer[dataIndex], ms, 4);
-    dataIndex += 4;
+      uint8_t ms[2];
+
+      ms[0] = sample[0] & 0xff;
+      ms[1] = sample[1] & 0xff;
+      
+      memcpy(&buffer[dataIndex], ms, 2);
+      dataIndex += 2;
+    } else {
+      int16_t ms[2];
+
+      ms[0] = sample[0];
+      ms[1] = sample[1];
+      
+      memcpy(&buffer[dataIndex], ms, 4);
+      dataIndex += 4;
+    }
 
     //Sound will be broken without the code below
     if(dataIndex >= bufferLength && I2S.availableForWrite()>=bufferLength)
@@ -179,6 +192,7 @@ size_t AudioOutputStdI2S::transferData(){
 
 void AudioOutputStdI2S::flush()
 {
+  transferData();
   I2S.flush();
 }
 
@@ -187,6 +201,7 @@ bool AudioOutputStdI2S::stop()
   if (!i2sOn)
     return false;
 
+  flush();
   I2S.end();
   if(buffer)
   {
