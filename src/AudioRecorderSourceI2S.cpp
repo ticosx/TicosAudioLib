@@ -20,6 +20,9 @@
 #include "AudioRecorderSourceI2S.h"
 #include <I2S.h>
 #include <stdexcept>
+//Depends on https://github.com/ticosx/TicosService
+#include "ServiceManager.h"
+#include "AudioService.h"
 #include "Log.h"
 #define ADUIO_RECORD_SRC_MIC_TAG "AudioRecorderSourceI2S"
 
@@ -32,6 +35,12 @@ AudioRecorderSourceI2S::AudioRecorderSourceI2S()
     throw std::runtime_error("Invalid service type");
   }
 #endif
+  AudioService* audioService = (AudioService*)ServiceManager::getService(AUDIO_SERVICE);
+  if(audioService == NULL) {
+    warn(ADUIO_RECORD_SRC_MIC_TAG, "No AudioService defined");
+  } else {
+    codec = audioService->getAudioAdpater();
+  }
 }
 
 bool AudioRecorderSourceI2S::open(uint16_t hertz, uint8_t bps, uint8_t channels)
@@ -45,6 +54,10 @@ bool AudioRecorderSourceI2S::open(uint16_t hertz, uint8_t bps, uint8_t channels)
   if (!I2S.begin(I2S_PHILIPS_MODE, hertz, bps)) {
     error(ADUIO_RECORD_SRC_MIC_TAG, "Failed to initialize I2S!");
     return false;
+  }
+  if(codec){
+    codec->setBitsPerSample(bps);
+    codec->start(AUDIO_HAL_CODEC_MODE_ENCODE);
   }
   i2sOn = true;
   return true;
@@ -108,6 +121,10 @@ bool AudioRecorderSourceI2S::seek(int32_t pos, int dir)
 
 bool AudioRecorderSourceI2S::close()
 {
+
+  if(codec){
+    codec->stop(AUDIO_HAL_CODEC_MODE_ENCODE);
+  }
   if(i2sOn){
     I2S.end();
     i2sOn = false;

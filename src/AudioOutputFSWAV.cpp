@@ -74,14 +74,11 @@ bool AudioOutputFSWAV::consumeSample(int16_t sample[2])
     if (bps == 8) {
       uint8_t l = sample[i] & 0xff;
       buff[dataLen++] = l;
-      // f.write(&l, sizeof(l));
     } else {
       uint8_t l = sample[i] & 0xff;
       uint8_t h = (sample[i] >> 8) & 0xff;
       buff[dataLen++] = l;
       buff[dataLen++] = h;
-      // f.write(&l, sizeof(l));
-      // f.write(&h, sizeof(h));
     }
   }
   if(dataLen>=buffLen){
@@ -89,11 +86,6 @@ bool AudioOutputFSWAV::consumeSample(int16_t sample[2])
   }
   return true;
 }
-
-// uint16_t AudioOutputFSWAV::consumeSamples(int16_t *samples, uint16_t count)
-// {
-//   return f.write((uint8_t *)samples, (size_t)(count * (bps / 8) * channels));
-// }
 
 
 bool AudioOutputFSWAV::stop()

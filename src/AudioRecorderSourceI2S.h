@@ -23,6 +23,8 @@
 
 #include <Arduino.h>
 #include "AudioRecorderSource.h"
+//Depends on https://github.com/ticosx/TicosHwBase
+#include "AudioAdapter.h"
 
 class AudioRecorderSourceI2S : public AudioRecorderSource
 {
@@ -41,6 +43,8 @@ class AudioRecorderSourceI2S : public AudioRecorderSource
 
   protected:
     bool i2sOn = false;
+
+    AudioAdapter* codec = NULL;
 };
 
 #endif

@@ -22,12 +22,22 @@
 #include <I2S.h>
 #include <stdexcept>
 #include "AudioOutputStdI2S.h"
+//Depends on https://github.com/ticosx/TicosService
+#include "ServiceManager.h"
+#include "AudioService.h"
 #include "Log.h"
 
 #define AUDIO_OUTPUT_STD_I2S_TAG "AudioOutputStdI2S"
 
 AudioOutputStdI2S::AudioOutputStdI2S()
 {
+
+  AudioService* audioService = (AudioService*)ServiceManager::getService(AUDIO_SERVICE);
+  if(audioService == NULL) {
+    warn(AUDIO_OUTPUT_STD_I2S_TAG, "No AudioService defined");
+  } else {
+    codec = audioService->getAudioAdpater();
+  }
   //Default value
   bps = 16;
   channels = 2;
@@ -71,6 +81,9 @@ bool AudioOutputStdI2S::setBitsPerSample(int bits)
   this->bps = bits;
   if (i2sOn)
   {
+    if(codec){
+      codec->setBitsPerSample(bits);
+    }
     //Change the paratemter need to stop and begin I2S again
     stop();
   }
@@ -107,6 +120,9 @@ bool AudioOutputStdI2S::begin()
   if (!I2S.begin(I2S_PHILIPS_MODE, hertz, bps)) {
     error(AUDIO_OUTPUT_STD_I2S_TAG, "Failed to initialize I2S!");
     return false;
+  }
+  if(codec){
+    codec->start(AUDIO_HAL_CODEC_MODE_DECODE);
   }
   if(!buffer)
   {
@@ -202,6 +218,10 @@ bool AudioOutputStdI2S::stop()
     return false;
 
   flush();
+
+  if(codec){
+    codec->stop(AUDIO_HAL_CODEC_MODE_DECODE);
+  }
   I2S.end();
   if(buffer)
   {

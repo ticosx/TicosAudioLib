@@ -21,6 +21,8 @@
 #pragma once
 
 #include "AudioOutput.h"
+//Depends on https://github.com/ticosx/TicosHwBase
+#include "AudioAdapter.h"
 
 class AudioOutputStdI2S : public AudioOutput
 {
@@ -45,5 +47,7 @@ class AudioOutputStdI2S : public AudioOutput
     int16_t dataIndex = 0;
     size_t bufferLength = 0;
     size_t transferData();
+
+    AudioAdapter* codec = NULL;
 
 };
