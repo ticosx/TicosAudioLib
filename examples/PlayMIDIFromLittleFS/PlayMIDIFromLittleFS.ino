@@ -9,10 +9,10 @@
 #include <ESP8266WiFi.h>
 #include <AudioOutputI2S.h>
 #include <AudioGeneratorMIDI.h>
-#include <AudioFileSourceLittleFS.h>
+#include <AudioSourceLittleFS.h>
 
-AudioFileSourceLittleFS *sf2;
-AudioFileSourceLittleFS *mid;
+AudioSourceLittleFS *sf2;
+AudioSourceLittleFS *mid;
 AudioOutputI2S *dac;
 AudioGeneratorMIDI *midi;
 
@@ -27,8 +27,8 @@ void setup()
   Serial.println("Starting up...\n");
 
   audioLogger = &Serial;
-  sf2 = new AudioFileSourceLittleFS(soundfont);
-  mid = new AudioFileSourceLittleFS(midifile);
+  sf2 = new AudioSourceLittleFS(soundfont);
+  mid = new AudioSourceLittleFS(midifile);
   
   dac = new AudioOutputI2S();
   midi = new AudioGeneratorMIDI();

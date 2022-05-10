@@ -1,5 +1,5 @@
 #include <Arduino.h>
-#include "AudioFileSourceSTDIO.h"
+#include "AudioSourceSTDIO.h"
 #include "AudioOutputSTDIO.h"
 #include "AudioGeneratorOpus.h"
 
@@ -10,7 +10,7 @@ int main(int argc, char **argv)
     (void) argc;
     (void) argv;
 
-    AudioFileSourceSTDIO *file = new AudioFileSourceSTDIO(OPUS);
+    AudioSourceSTDIO *file = new AudioSourceSTDIO(OPUS);
     AudioOutputSTDIO *out = new AudioOutputSTDIO();
     out->SetFilename("opus.wav");
     AudioGeneratorOpus *opus = new AudioGeneratorOpus();

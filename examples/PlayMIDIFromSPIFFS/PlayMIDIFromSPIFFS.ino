@@ -10,10 +10,10 @@
 #include <AudioOutputNull.h>
 #include <AudioOutputI2S.h>
 #include <AudioGeneratorMIDI.h>
-#include <AudioFileSourceSPIFFS.h>
+#include <AudioSourceSPIFFS.h>
 
-AudioFileSourceSPIFFS *sf2;
-AudioFileSourceSPIFFS *mid;
+AudioSourceSPIFFS *sf2;
+AudioSourceSPIFFS *mid;
 AudioOutputI2S *dac;
 AudioGeneratorMIDI *midi;
 
@@ -29,8 +29,8 @@ void setup()
   Serial.println("Starting up...\n");
 
   audioLogger = &Serial;
-  sf2 = new AudioFileSourceSPIFFS(soundfont);
-  mid = new AudioFileSourceSPIFFS(midifile);
+  sf2 = new AudioSourceSPIFFS(soundfont);
+  mid = new AudioSourceSPIFFS(midifile);
   
   dac = new AudioOutputI2S();
   midi = new AudioGeneratorMIDI();

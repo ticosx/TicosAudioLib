@@ -109,7 +109,7 @@ done:
   return running;
 }
 
-bool AudioGeneratorMOD::begin(AudioFileSource *source, AudioOutput *out)
+bool AudioGeneratorMOD::begin(AudioSource *source, AudioOutput *out)
 {
   if (running) stop();
   

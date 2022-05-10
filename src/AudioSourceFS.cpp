@@ -1,6 +1,6 @@
 /*
-  AudioFileSourceSPIFFS
-  Input SD card "file" to be used by AudioGenerator
+  AudioSourceFS
+  Input "file" to be used by AudioGenerator
   
   Copyright (C) 2017  Earle F. Philhower, III
 
@@ -18,61 +18,56 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "AudioFileSourceSD.h"
+#include "AudioSourceFS.h"
+#ifdef ESP32
+#include "SPIFFS.h"
+#endif
 
-AudioFileSourceSD::AudioFileSourceSD()
+AudioSourceFS::AudioSourceFS(FS &fs, const char *filename)
 {
-}
-
-AudioFileSourceSD::AudioFileSourceSD(const char *filename)
-{
+  filesystem = &fs;
   open(filename);
 }
 
-bool AudioFileSourceSD::open(const char *filename)
+bool AudioSourceFS::open(const char *filename)
 {
-  f = SD_MMC.open(filename, FILE_READ);
+#ifndef ESP32
+  filesystem->begin();
+#endif
+  f = filesystem->open(filename, "r");
   return f;
 }
 
-AudioFileSourceSD::~AudioFileSourceSD()
+AudioSourceFS::~AudioSourceFS()
 {
   if (f) f.close();
 }
 
-uint32_t AudioFileSourceSD::read(void *data, uint32_t len)
+uint32_t AudioSourceFS::read(void *data, uint32_t len)
 {
   return f.read(reinterpret_cast<uint8_t*>(data), len);
 }
 
-bool AudioFileSourceSD::seek(int32_t pos, int dir)
+bool AudioSourceFS::seek(int32_t pos, int dir)
 {
-  if (!f) return false;
-  if (dir==SEEK_SET) return f.seek(pos);
-  else if (dir==SEEK_CUR) return f.seek(f.position() + pos);
-  else if (dir==SEEK_END) return f.seek(f.size() + pos);
-  return false;
+  return f.seek(pos, (dir==SEEK_SET)?SeekSet:(dir==SEEK_CUR)?SeekCur:SeekEnd);
 }
 
-bool AudioFileSourceSD::close()
+bool AudioSourceFS::close()
 {
   f.close();
   return true;
 }
 
-bool AudioFileSourceSD::isOpen()
+bool AudioSourceFS::isOpen()
 {
   return f?true:false;
 }
 
-uint32_t AudioFileSourceSD::getSize()
+uint32_t AudioSourceFS::getSize()
 {
   if (!f) return 0;
   return f.size();
 }
 
-uint32_t AudioFileSourceSD::getPos()
-{
-  if (!f) return 0;
-  return f.position();
-}
+

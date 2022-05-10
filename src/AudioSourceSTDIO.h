@@ -1,5 +1,5 @@
 /*
-  AudioFileSourceSTDIO
+  AudioSourceSTDIO
   Input SPIFFS "file" to be used by AudioGenerator
   Only for host-based testing, not Arduino
   
@@ -19,21 +19,21 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef _AUDIOFILESOURCESTDIO_H
-#define _AUDIOFILESOURCESTDIO_H
+#ifndef _AUDIOSOURCESTDIO_H
+#define _AUDIOSOURCESTDIO_H
 
 #include <Arduino.h>
 
 #ifndef ARDUINO
 
-#include "AudioFileSource.h"
+#include "AudioSource.h"
 
-class AudioFileSourceSTDIO : public AudioFileSource
+class AudioSourceSTDIO : public AudioSource
 {
   public:
-    AudioFileSourceSTDIO();
-    AudioFileSourceSTDIO(const char *filename);
-    virtual ~AudioFileSourceSTDIO() override;
+    AudioSourceSTDIO();
+    AudioSourceSTDIO(const char *filename);
+    virtual ~AudioSourceSTDIO() override;
     
     virtual bool open(const char *filename) override;
     virtual uint32_t read(void *data, uint32_t len) override;

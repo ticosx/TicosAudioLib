@@ -29,7 +29,7 @@ class AudioGeneratorMP3a : public AudioGenerator
   public:
     AudioGeneratorMP3a();
     virtual ~AudioGeneratorMP3a() override;
-    virtual bool begin(AudioFileSource *source, AudioOutput *output) override;
+    virtual bool begin(AudioSource *source, AudioOutput *output) override;
     virtual bool loop() override;
     virtual bool stop() override;
     virtual bool isRunning() override;

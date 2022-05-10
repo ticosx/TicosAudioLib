@@ -1,5 +1,5 @@
 /*
-  AudioFileSourceFunction
+  AudioSourceFunction
   Audio output generator which can generate WAV file data from function
 
   Copyright (C) 2021  Hideaki Tai
@@ -18,9 +18,9 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "AudioFileSourceFunction.h"
+#include "AudioSourceFunction.h"
 
-AudioFileSourceFunction::AudioFileSourceFunction(float sec, uint16_t channels, uint32_t sample_per_sec, uint16_t bits_per_sample) {
+AudioSourceFunction::AudioSourceFunction(float sec, uint16_t channels, uint32_t sample_per_sec, uint16_t bits_per_sample) {
   uint32_t bytes_per_sec = sample_per_sec * channels * bits_per_sample / 8;
   uint32_t len = uint32_t(sec * (float)bytes_per_sec);
 
@@ -52,11 +52,11 @@ AudioFileSourceFunction::AudioFileSourceFunction(float sec, uint16_t channels, u
   is_unique = false;
 }
 
-AudioFileSourceFunction::~AudioFileSourceFunction() {
+AudioSourceFunction::~AudioSourceFunction() {
   close();
 }
 
-uint32_t AudioFileSourceFunction::read(void* data, uint32_t len) {
+uint32_t AudioSourceFunction::read(void* data, uint32_t len) {
   // callback size must be 1 or equal to channels
   if (!is_ready)
     return 0;
@@ -107,7 +107,7 @@ uint32_t AudioFileSourceFunction::read(void* data, uint32_t len) {
   return (pos >= size) ? 0 : i;
 }
 
-bool AudioFileSourceFunction::seek(int32_t pos, int dir) {
+bool AudioSourceFunction::seek(int32_t pos, int dir) {
   if (dir == SEEK_SET) {
     if (pos < 0 || (uint32_t)pos >= size)
       return false;
@@ -126,7 +126,7 @@ bool AudioFileSourceFunction::seek(int32_t pos, int dir) {
   return true;
 }
 
-bool AudioFileSourceFunction::close() {
+bool AudioSourceFunction::close() {
   funcs.clear();
   pos = 0;
   size = 0;
@@ -135,14 +135,14 @@ bool AudioFileSourceFunction::close() {
   return true;
 }
 
-bool AudioFileSourceFunction::isOpen() {
+bool AudioSourceFunction::isOpen() {
   return is_ready;
 }
 
-uint32_t AudioFileSourceFunction::getSize() {
+uint32_t AudioSourceFunction::getSize() {
   return size;
 }
 
-uint32_t AudioFileSourceFunction::getPos() {
+uint32_t AudioSourceFunction::getPos() {
   return pos;
 }

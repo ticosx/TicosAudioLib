@@ -5,7 +5,7 @@
     #include <ESP8266WiFi.h>
 #endif
 
-#include "AudioFileSourcePROGMEM.h"
+#include "AudioSourcePROGMEM.h"
 #include "AudioGeneratorWAV.h"
 #include "AudioOutputI2S.h"
 #include "AudioOutputMixer.h"
@@ -14,7 +14,7 @@
 #include "viola.h"
 
 AudioGeneratorWAV *wav[2];
-AudioFileSourcePROGMEM *file[2];
+AudioSourcePROGMEM *file[2];
 AudioOutputI2S *out;
 AudioOutputMixer *mixer;
 AudioOutputMixerStub *stub[2];
@@ -27,7 +27,7 @@ void setup()
   Serial.printf("WAV start\n");
 
   audioLogger = &Serial;
-  file[0] = new AudioFileSourcePROGMEM( viola, sizeof(viola) );
+  file[0] = new AudioSourcePROGMEM( viola, sizeof(viola) );
   out = new AudioOutputI2S();
   mixer = new AudioOutputMixer(32, out);
   stub[0] = mixer->NewInput();
@@ -55,7 +55,7 @@ void loop()
       stub[1] = mixer->NewInput();
       stub[1]->SetGain(0.4);
       wav[1] = new AudioGeneratorWAV();
-      file[1] = new AudioFileSourcePROGMEM( viola, sizeof(viola) );
+      file[1] = new AudioSourcePROGMEM( viola, sizeof(viola) );
       wav[1]->begin(file[1], stub[1]);
       go = true;
     }

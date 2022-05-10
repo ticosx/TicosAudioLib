@@ -30,7 +30,7 @@ class AudioGeneratorAAC : public AudioGenerator
     AudioGeneratorAAC();
     AudioGeneratorAAC(void *preallocateData, int preallocateSize);
     virtual ~AudioGeneratorAAC() override;
-    virtual bool begin(AudioFileSource *source, AudioOutput *output) override;
+    virtual bool begin(AudioSource *source, AudioOutput *output) override;
     virtual bool loop() override;
     virtual bool stop() override;
     virtual bool isRunning() override;

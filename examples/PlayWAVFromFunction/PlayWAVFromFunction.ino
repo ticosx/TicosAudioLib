@@ -1,5 +1,5 @@
 #include <Arduino.h>
-#include "AudioFileSourceFunction.h"
+#include "AudioSourceFunction.h"
 #include "AudioGeneratorWAV.h"
 #include "AudioOutputI2SNoDAC.h"
 
@@ -14,7 +14,7 @@ float sine_wave(const float time) {
 };
 
 AudioGeneratorWAV* wav;
-AudioFileSourceFunction* file;
+AudioSourceFunction* file;
 AudioOutputI2SNoDAC* out;
 
 void setup() {
@@ -22,12 +22,12 @@ void setup() {
   delay(1000);
 
   // ===== create instance with length of song in [sec] =====
-  file = new AudioFileSourceFunction(8.);
+  file = new AudioSourceFunction(8.);
   //
   // you can set (sec, channels, hz, bit/sample) but you should care about
   // the trade-off between performance and the audio quality
   //
-  // file = new AudioFileSourceFunction(sec, channels, hz, bit/sample);
+  // file = new AudioSourceFunction(sec, channels, hz, bit/sample);
   // channels   : default = 1
   // hz         : default = 8000 (8000, 11025, 22050, 44100, 48000, etc.)
   // bit/sample : default = 16 (8, 16, 32)
@@ -48,7 +48,7 @@ void setup() {
   // if the channels > 1 && the number of function == 1,
   // same function are used to generate the sound in every channel
   //
-  // file = new AudioFileSourceFunction(8., 2);
+  // file = new AudioSourceFunction(8., 2);
   // file->addAudioGenerators(
   //   // L (channel 0)
   //   [](const float time) {

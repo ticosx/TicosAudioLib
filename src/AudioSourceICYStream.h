@@ -1,6 +1,6 @@
 /*
-  AudioFileStream
-  Convert an AudioFileSource* to a Stream*
+  AudioSourceHTTPStream
+  Connect to a HTTP based streaming service
   
   Copyright (C) 2017  Earle F. Philhower, III
 
@@ -18,31 +18,31 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef AUDIOFILESTREAM_H
-#define AUDIOFILESTREAM_H
+#if defined(ESP32) || defined(ESP8266)
+#pragma once
 
 #include <Arduino.h>
-#include "AudioFileSource.h"
+#ifdef ESP32
+  #include <HTTPClient.h>
+#else
+  #include <ESP8266HTTPClient.h>
+#endif
 
-class AudioFileStream : public Stream
+#include "AudioSourceHTTPStream.h"
+
+class AudioSourceICYStream : public AudioSourceHTTPStream
 {
-public:
-  AudioFileStream(AudioFileSource *source, int definedLen);
-  virtual ~AudioFileStream();
+  public:
+    AudioSourceICYStream();
+    AudioSourceICYStream(const char *url);
+    virtual ~AudioSourceICYStream() override;
+    
+    virtual bool open(const char *url) override;
 
-public:
-  // Stream interface - see the Arduino library documentation.
-  virtual int available() override;
-  virtual int read() override;
-  virtual int peek() override;
-  virtual void flush() override;
-  virtual size_t write(uint8_t x) override { (void)x; return 0; };
-
-private:
-  AudioFileSource *src;
-  int saved;
-  int len;
-  int ptr;
+  private:
+    virtual uint32_t readInternal(void *data, uint32_t len, bool nonBlock) override;
+    int icyMetaInt;
+    int icyByteCount;
 };
 
 #endif

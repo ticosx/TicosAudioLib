@@ -23,7 +23,7 @@
 
 #include <Arduino.h>
 #include "AudioStatus.h"
-#include "AudioFileSource.h"
+#include "AudioSource.h"
 #include "AudioOutput.h"
 
 class AudioGenerator
@@ -31,7 +31,7 @@ class AudioGenerator
   public:
     AudioGenerator() { lastSample[0] = 0; lastSample[1] = 0; };
     virtual ~AudioGenerator() {};
-    virtual bool begin(AudioFileSource *source, AudioOutput *output) { (void)source; (void)output; return false; };
+    virtual bool begin(AudioSource *source, AudioOutput *output) { (void)source; (void)output; return false; };
     virtual bool loop() { return false; };
     virtual bool stop() { return false; };
     virtual bool isRunning() { return false;};
@@ -43,7 +43,7 @@ class AudioGenerator
 
   protected:
     bool running;
-    AudioFileSource *file;
+    AudioSource *file;
     AudioOutput *output;
     int16_t lastSample[2];
 

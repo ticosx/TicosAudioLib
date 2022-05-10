@@ -1,10 +1,10 @@
 #include <Arduino.h>
 #include "AudioGeneratorAAC.h"
 #include "AudioOutputI2S.h"
-#include "AudioFileSourcePROGMEM.h"
+#include "AudioSourcePROGMEM.h"
 #include "sampleaac.h"
 
-AudioFileSourcePROGMEM *in;
+AudioSourcePROGMEM *in;
 AudioGeneratorAAC *aac;
 AudioOutputI2S *out;
 
@@ -13,7 +13,7 @@ void setup()
   Serial.begin(115200);
 
   audioLogger = &Serial;
-  in = new AudioFileSourcePROGMEM(sampleaac, sizeof(sampleaac));
+  in = new AudioSourcePROGMEM(sampleaac, sizeof(sampleaac));
   aac = new AudioGeneratorAAC();
   out = new AudioOutputI2S();
 

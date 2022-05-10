@@ -1,6 +1,6 @@
 /*
-  AudioFileSourceFS
-  Input Arduion "file" to be used by AudioGenerator
+  AudioStream
+  Convert an AudioSource* to a Stream*
   
   Copyright (C) 2017  Earle F. Philhower, III
 
@@ -18,22 +18,31 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef _AUDIOFILESOURCELITTLEFS_H
-#define _AUDIOFILESOURCELITTLEFS_H
+#ifndef AudioStream_H
+#define AudioStream_H
 
 #include <Arduino.h>
-#include <LittleFS.h>
+#include "AudioSource.h"
 
-#include "AudioFileSource.h"
-#include "AudioFileSourceFS.h"
-
-class AudioFileSourceLittleFS : public AudioFileSourceFS
+class AudioStream : public Stream
 {
-  public:
-    AudioFileSourceLittleFS() : AudioFileSourceFS(LittleFS) { };
-    AudioFileSourceLittleFS(const char *filename) : AudioFileSourceFS(LittleFS, filename) {};
-    // Others are inherited from base
+public:
+  AudioStream(AudioSource *source, int definedLen);
+  virtual ~AudioStream();
+
+public:
+  // Stream interface - see the Arduino library documentation.
+  virtual int available() override;
+  virtual int read() override;
+  virtual int peek() override;
+  virtual void flush() override;
+  virtual size_t write(uint8_t x) override { (void)x; return 0; };
+
+private:
+  AudioSource *src;
+  int saved;
+  int len;
+  int ptr;
 };
 
 #endif
-

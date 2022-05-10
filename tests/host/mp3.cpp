@@ -1,9 +1,9 @@
 #include <Arduino.h>
-#include "AudioFileSourceSTDIO.h"
+#include "AudioSourceSTDIO.h"
 #include "AudioOutputSTDIO.h"
 #include "AudioGeneratorMP3.h"
-#include "AudioFileSourceID3.h"
-#include "AudioFileSourceBuffer.h"
+#include "AudioSourceID3.h"
+#include "AudioSourceBuffer.h"
 #include "AudioOutputMixer.h"
 
 #define MP3 "../../examples/PlayMP3FromSPIFFS/data/pno-cs.mp3"
@@ -47,10 +47,10 @@ int main(int argc, char **argv)
 {
     (void) argc;
     (void) argv;
-    AudioFileSourceSTDIO *in = new AudioFileSourceSTDIO(MP3);
-    AudioFileSourceBuffer *buff = new AudioFileSourceBuffer(in, 2048);
+    AudioSourceSTDIO *in = new AudioSourceSTDIO(MP3);
+    AudioSourceBuffer *buff = new AudioSourceBuffer(in, 2048);
     buff->RegisterStatusCB(StatusCallback, (void*)"buffer");
-    AudioFileSourceID3 *id3 = new AudioFileSourceID3(buff);
+    AudioSourceID3 *id3 = new AudioSourceID3(buff);
     id3->RegisterMetadataCB(MDCallback, (void*)"ID3TAG");
     AudioOutputSTDIO *out = new AudioOutputSTDIO();
     out->SetFilename("jamonit.wav");

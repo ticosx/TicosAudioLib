@@ -1,5 +1,5 @@
 #include <Arduino.h>
-#include "AudioFileSourceSD.h"
+#include "AudioSourceSD.h"
 #include "AudioOutputSPDIF.h"
 #include "AudioGeneratorFLAC.h"
 
@@ -20,7 +20,7 @@
 #define SPDIF_OUT_PIN 27
 
 File dir;
-AudioFileSourceSD *source = NULL;
+AudioSourceSD *source = NULL;
 AudioOutputSPDIF *output = NULL;
 AudioGeneratorFLAC *decoder = NULL;
 
@@ -30,7 +30,7 @@ void setup() {
   delay(1000);
 
   audioLogger = &Serial;  
-  source = new AudioFileSourceSD();
+  source = new AudioSourceSD();
   output = new AudioOutputSPDIF(SPDIF_OUT_PIN);
   decoder = new AudioGeneratorFLAC();
 

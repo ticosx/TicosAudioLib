@@ -1,5 +1,5 @@
 /*
-  AudioFileSource
+  AudioSource
   Base class of an input "file" to be used by AudioGenerator
   
   Copyright (C) 2017  Earle F. Philhower, III
@@ -18,17 +18,17 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef _AUDIOFILESOURCE_H
-#define _AUDIOFILESOURCE_H
+#ifndef _AUDIOSOURCE_H
+#define _AUDIOSOURCE_H
 
 #include <Arduino.h>
 #include "AudioStatus.h"
 
-class AudioFileSource
+class AudioSource
 {
   public:
-    AudioFileSource() {};
-    virtual ~AudioFileSource() {};
+    AudioSource() {};
+    virtual ~AudioSource() {};
     virtual bool open(const char *filename) { (void)filename; return false; };
     virtual uint32_t read(void *data, uint32_t len) { (void)data; (void)len; return 0; };
     virtual uint32_t readNonBlock(void *data, uint32_t len) { return read(data, len); }; 

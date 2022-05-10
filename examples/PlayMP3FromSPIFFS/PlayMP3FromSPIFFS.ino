@@ -5,8 +5,8 @@
 #else
   #include <ESP8266WiFi.h>
 #endif
-#include "AudioFileSourceSPIFFS.h"
-#include "AudioFileSourceID3.h"
+#include "AudioSourceSPIFFS.h"
+#include "AudioSourceID3.h"
 #include "AudioGeneratorMP3.h"
 #include "AudioOutputI2SNoDAC.h"
 
@@ -17,9 +17,9 @@
 // pno_cs from https://ccrma.stanford.edu/~jos/pasp/Sound_Examples.html
 
 AudioGeneratorMP3 *mp3;
-AudioFileSourceSPIFFS *file;
+AudioSourceSPIFFS *file;
 AudioOutputI2SNoDAC *out;
-AudioFileSourceID3 *id3;
+AudioSourceID3 *id3;
 
 
 // Called when a metadata event occurs (i.e. an ID3 tag, an ICY block, etc.
@@ -53,8 +53,8 @@ void setup()
   Serial.printf("Sample MP3 playback begins...\n");
 
   audioLogger = &Serial;
-  file = new AudioFileSourceSPIFFS("/pno-cs.mp3");
-  id3 = new AudioFileSourceID3(file);
+  file = new AudioSourceSPIFFS("/pno-cs.mp3");
+  id3 = new AudioSourceID3(file);
   id3->RegisterMetadataCB(MDCallback, (void*)"ID3TAG");
   out = new AudioOutputI2SNoDAC();
   mp3 = new AudioGeneratorMP3();

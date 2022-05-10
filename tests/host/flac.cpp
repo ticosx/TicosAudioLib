@@ -1,5 +1,5 @@
 #include <Arduino.h>
-#include "AudioFileSourceSTDIO.h"
+#include "AudioSourceSTDIO.h"
 #include "AudioOutputSTDIO.h"
 #include "AudioGeneratorFLAC.h"
 
@@ -9,7 +9,7 @@ int main(int argc, char **argv)
 {
     (void) argc;
     (void) argv;
-    AudioFileSourceSTDIO *in = new AudioFileSourceSTDIO(AAC);
+    AudioSourceSTDIO *in = new AudioSourceSTDIO(AAC);
     AudioOutputSTDIO *out = new AudioOutputSTDIO();
     out->SetFilename("out.flac.wav");
     AudioGeneratorFLAC *flac = new AudioGeneratorFLAC();

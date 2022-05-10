@@ -56,7 +56,7 @@ touch ${THISLIB}/examples/${ino}/${ino}.ino # rebuild
 
 eval make FORCE32=${FORCE32} -j \
     USERCSOURCES=\"${MAD}\" \
-    USERCXXSOURCES=\"${THISLIB}/src/AudioFileSourceBuffer.cpp ${THISLIB}/src/AudioLogger.cpp ${THISLIB}/src/AudioGeneratorMP3.cpp ${THISLIB}/src/AudioFileSourceICYStream.cpp ${THISLIB}/src/AudioFileSourceHTTPStream.cpp\" \
+    USERCXXSOURCES=\"${THISLIB}/src/AudioSourceBuffer.cpp ${THISLIB}/src/AudioLogger.cpp ${THISLIB}/src/AudioGeneratorMP3.cpp ${THISLIB}/src/AudioSourceICYStream.cpp ${THISLIB}/src/AudioSourceHTTPStream.cpp\" \
     USERCFLAGS=\"-I${THISLIB}/src/ -DAUDIO=${AUDIO}\" \
     ${THISLIB}/examples/${ino}/${ino}
 

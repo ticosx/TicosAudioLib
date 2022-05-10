@@ -1,9 +1,9 @@
 /*
-  AudioFileSourceSPIRAMBuffer
+  AudioSourceSPIRAMBuffer
   Buffered file source in external SPI RAM
 
   Copyright (C) 2017  Sebastien Decourriere
-  Based on AudioFileSourceBuffer class from Earle F. Philhower, III
+  Based on AudioSourceBuffer class from Earle F. Philhower, III
 
   Copyright (C) 2020  Earle F. Philhower, III
   Rewritten for speed and functionality
@@ -25,11 +25,11 @@
 #if defined(ESP32) || defined(ESP8266)
 
 #include <Arduino.h>
-#include "AudioFileSourceSPIRAMBuffer.h"
+#include "AudioSourceSPIRAMBuffer.h"
 
 #pragma GCC optimize ("O3")
 
-AudioFileSourceSPIRAMBuffer::AudioFileSourceSPIRAMBuffer(AudioFileSource *source, uint8_t csPin, uint32_t buffSizeBytes)
+AudioSourceSPIRAMBuffer::AudioSourceSPIRAMBuffer(AudioSource *source, uint8_t csPin, uint32_t buffSizeBytes)
 {
     ram.begin(40, csPin);
     ramSize = buffSizeBytes;
@@ -40,12 +40,12 @@ AudioFileSourceSPIRAMBuffer::AudioFileSourceSPIRAMBuffer(AudioFileSource *source
     audioLogger->printf_P(PSTR("SPI RAM buffer size: %u Bytes\n"), ramSize);
 }
 
-AudioFileSourceSPIRAMBuffer::~AudioFileSourceSPIRAMBuffer()
+AudioSourceSPIRAMBuffer::~AudioSourceSPIRAMBuffer()
 {
     ram.end();
 }
 
-bool AudioFileSourceSPIRAMBuffer::seek(int32_t pos, int dir)
+bool AudioSourceSPIRAMBuffer::seek(int32_t pos, int dir)
 {
     // Invalidate
     readPtr = 0;
@@ -54,27 +54,27 @@ bool AudioFileSourceSPIRAMBuffer::seek(int32_t pos, int dir)
     return src->seek(pos, dir);
 }
 
-bool AudioFileSourceSPIRAMBuffer::close()
+bool AudioSourceSPIRAMBuffer::close()
 {
     return src->close();
 }
 
-bool AudioFileSourceSPIRAMBuffer::isOpen()
+bool AudioSourceSPIRAMBuffer::isOpen()
 {
     return src->isOpen();
 }
 
-uint32_t AudioFileSourceSPIRAMBuffer::getSize()
+uint32_t AudioSourceSPIRAMBuffer::getSize()
 {
     return src->getSize();
 }
 
-uint32_t AudioFileSourceSPIRAMBuffer::getPos()
+uint32_t AudioSourceSPIRAMBuffer::getPos()
 {
     return src->getPos() - (writePtr - readPtr);
 }
 
-uint32_t AudioFileSourceSPIRAMBuffer::read(void *data, uint32_t len)
+uint32_t AudioSourceSPIRAMBuffer::read(void *data, uint32_t len)
 {
     uint32_t bytes = 0;
 
@@ -128,7 +128,7 @@ uint32_t AudioFileSourceSPIRAMBuffer::read(void *data, uint32_t len)
     return bytes;
 }
 
-void AudioFileSourceSPIRAMBuffer::fill()
+void AudioSourceSPIRAMBuffer::fill()
 {
     // Make sure the buffer is pre-filled before make partial fill.
     if (!filled) return;
@@ -152,7 +152,7 @@ void AudioFileSourceSPIRAMBuffer::fill()
     }
 }
 
-bool AudioFileSourceSPIRAMBuffer::loop()
+bool AudioSourceSPIRAMBuffer::loop()
 {
     static uint32_t last = 0;
     if (!src->loop()) return false;

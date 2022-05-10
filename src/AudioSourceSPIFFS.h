@@ -1,5 +1,5 @@
 /*
-  AudioFileSourceFS
+  AudioSourceFS
   Input Arduion "file" to be used by AudioGenerator
   
   Copyright (C) 2017  Earle F. Philhower, III
@@ -18,32 +18,21 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef _AUDIOFILESOURCEFS_H
-#define _AUDIOFILESOURCEFS_H
+#ifndef _AUDIOSOURCESPIFFS_H
+#define _AUDIOSOURCESPIFFS_H
 
 #include <Arduino.h>
 #include <FS.h>
 
-#include "AudioFileSource.h"
+#include "AudioSource.h"
+#include "AudioSourceFS.h"
 
-class AudioFileSourceFS : public AudioFileSource
+class AudioSourceSPIFFS : public AudioSourceFS
 {
   public:
-    AudioFileSourceFS(fs::FS &fs) { filesystem = &fs; }
-    AudioFileSourceFS(fs::FS &fs, const char *filename);
-    virtual ~AudioFileSourceFS() override;
-    
-    virtual bool open(const char *filename) override;
-    virtual uint32_t read(void *data, uint32_t len) override;
-    virtual bool seek(int32_t pos, int dir) override;
-    virtual bool close() override;
-    virtual bool isOpen() override;
-    virtual uint32_t getSize() override;
-    virtual uint32_t getPos() override { if (!f) return 0; else return f.position(); };
-
-  private:
-    fs::FS *filesystem;
-    fs::File f;
+    AudioSourceSPIFFS() : AudioSourceFS(SPIFFS) { };
+    AudioSourceSPIFFS(const char *filename) : AudioSourceFS(SPIFFS, filename) {};
+    // Others are inherited from base
 };
 
 

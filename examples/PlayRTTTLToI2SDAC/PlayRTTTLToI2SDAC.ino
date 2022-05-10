@@ -1,4 +1,4 @@
-#include "AudioFileSourcePROGMEM.h"
+#include "AudioSourcePROGMEM.h"
 #include "AudioGeneratorRTTTL.h"
 #include "AudioOutputI2S.h"
 
@@ -7,7 +7,7 @@ const char rudolph[] PROGMEM =
 // Plenty more at: http://mines.lumpylumpy.com/Electronics/Computers/Software/Cpp/MFC/RingTones.RTTTL
 
 AudioGeneratorRTTTL *rtttl;
-AudioFileSourcePROGMEM *file;
+AudioSourcePROGMEM *file;
 AudioOutputI2S *out;
 
 void setup()
@@ -18,7 +18,7 @@ void setup()
   Serial.printf("RTTTL start\n");
 
   audioLogger = &Serial;
-  file = new AudioFileSourcePROGMEM( rudolph, strlen_P(rudolph) );
+  file = new AudioSourcePROGMEM( rudolph, strlen_P(rudolph) );
   out = new AudioOutputI2S();
   rtttl = new AudioGeneratorRTTTL();
   rtttl->begin(file, out);

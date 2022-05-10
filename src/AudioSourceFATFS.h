@@ -1,5 +1,5 @@
 /*
-  AudioFileSourceFS
+  AudioSourceFS
   Input Arduion "file" to be used by AudioGenerator
   
   Copyright (C) 2017  Earle F. Philhower, III
@@ -18,8 +18,8 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef _AUDIOFILESOURCEFATFS_H
-#define _AUDIOFILESOURCEFATFS_H
+#ifndef _AUDIOSOURCEFATFS_H
+#define _AUDIOSOURCEFATFS_H
 
 #ifdef ESP32
 
@@ -27,18 +27,18 @@
 #include <FS.h>
 #include <FFat.h>
 
-#include "AudioFileSource.h"
-#include "AudioFileSourceFS.h"
+#include "AudioSource.h"
+#include "AudioSourceFS.h"
 
 /*
- AudioFileSource for FAT filesystem.
+ AudioSource for FAT filesystem.
  */
-class AudioFileSourceFATFS : public AudioFileSourceFS
+class AudioSourceFATFS : public AudioSourceFS
 {
   public:
-    AudioFileSourceFATFS() : AudioFileSourceFS(FFat) {};
-    AudioFileSourceFATFS(const char *filename) : AudioFileSourceFS(FFat) {
-      // We call open() ourselves because calling AudioFileSourceFS(FFat, filename)
+    AudioSourceFATFS() : AudioSourceFS(FFat) {};
+    AudioSourceFATFS(const char *filename) : AudioSourceFS(FFat) {
+      // We call open() ourselves because calling AudioSourceFS(FFat, filename)
       // would call the parent open() and we do not want that
       open(filename);
     };
@@ -50,7 +50,7 @@ class AudioFileSourceFATFS : public AudioFileSourceFS
         return false;
       } else {
         // now that the fielsystem has been mounted, we can call the regular parent open() function
-        return AudioFileSourceFS::open(filename);
+        return AudioSourceFS::open(filename);
       }
     };
 

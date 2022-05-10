@@ -4,8 +4,8 @@
 #else
     #include <ESP8266WiFi.h>
 #endif
-#include "AudioFileSourceICYStream.h"
-#include "AudioFileSourceSPIRAMBuffer.h"
+#include "AudioSourceICYStream.h"
+#include "AudioSourceSPIRAMBuffer.h"
 #include "AudioGeneratorMP3.h"
 #include "AudioOutputI2SNoDAC.h"
 
@@ -24,8 +24,8 @@ const char* password = STAPSK;
 const char *URL="http://kvbstreams.dyndns.org:8000/wkvi-am";
 
 AudioGeneratorMP3 *mp3;
-AudioFileSourceICYStream *file;
-AudioFileSourceSPIRAMBuffer *buff;
+AudioSourceICYStream *file;
+AudioSourceSPIRAMBuffer *buff;
 AudioOutputI2SNoDAC *out;
 
 // Called when a metadata event occurs (i.e. an ID3 tag, an ICY block, etc.
@@ -74,10 +74,10 @@ void setup()
   Serial.println("Connected");
 
   audioLogger = &Serial;
-  file = new AudioFileSourceICYStream(URL);
+  file = new AudioSourceICYStream(URL);
   file->RegisterMetadataCB(MDCallback, (void*)"ICY");
   // Initialize 23LC1024 SPI RAM buffer with chip select ion GPIO4 and ram size of 128KByte
-  buff = new AudioFileSourceSPIRAMBuffer(file, 4, 128*1024);
+  buff = new AudioSourceSPIRAMBuffer(file, 4, 128*1024);
   buff->RegisterStatusCB(StatusCallback, (void*)"buffer");
   out = new AudioOutputI2SNoDAC();
   mp3 = new AudioGeneratorMP3();

@@ -1,6 +1,6 @@
 /*
-  AudioFileSourceFS
-  Input Arduion "file" to be used by AudioGenerator
+  AudioSourceSPIFFS
+  Input SD card "file" to be used by AudioGenerator
   
   Copyright (C) 2017  Earle F. Philhower, III
 
@@ -18,21 +18,31 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef _AUDIOFILESOURCESPIFFS_H
-#define _AUDIOFILESOURCESPIFFS_H
+#ifndef _AUDIOSOURCESD_H
+#define _AUDIOSOURCESD_H
 
-#include <Arduino.h>
-#include <FS.h>
+#include "AudioSource.h"
+#include <SD_MMC.h>
+// #include <SD.h>
 
-#include "AudioFileSource.h"
-#include "AudioFileSourceFS.h"
 
-class AudioFileSourceSPIFFS : public AudioFileSourceFS
+class AudioSourceSD : public AudioSource
 {
   public:
-    AudioFileSourceSPIFFS() : AudioFileSourceFS(SPIFFS) { };
-    AudioFileSourceSPIFFS(const char *filename) : AudioFileSourceFS(SPIFFS, filename) {};
-    // Others are inherited from base
+    AudioSourceSD();
+    AudioSourceSD(const char *filename);
+    virtual ~AudioSourceSD() override;
+    
+    virtual bool open(const char *filename) override;
+    virtual uint32_t read(void *data, uint32_t len) override;
+    virtual bool seek(int32_t pos, int dir) override;
+    virtual bool close() override;
+    virtual bool isOpen() override;
+    virtual uint32_t getSize() override;
+    virtual uint32_t getPos() override;
+
+  private:
+    File f;
 };
 
 

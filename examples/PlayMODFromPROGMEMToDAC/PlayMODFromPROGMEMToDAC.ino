@@ -1,5 +1,5 @@
 #include <Arduino.h>
-#include "AudioFileSourcePROGMEM.h"
+#include "AudioSourcePROGMEM.h"
 #include "AudioGeneratorMOD.h"
 #include "AudioOutputI2S.h"
 #ifdef ESP32
@@ -12,7 +12,7 @@
 #include "enigma.h"
 
 AudioGeneratorMOD *mod;
-AudioFileSourcePROGMEM *file;
+AudioSourcePROGMEM *file;
 AudioOutputI2S *out;
 
 void setup()
@@ -22,7 +22,7 @@ void setup()
   delay(1000);
 
   audioLogger = &Serial;
-  file = new AudioFileSourcePROGMEM( enigma_mod, sizeof(enigma_mod) );
+  file = new AudioSourcePROGMEM( enigma_mod, sizeof(enigma_mod) );
   // out = new AudioOutputI2S(0, 1); Uncomment this line, comment the next one to use the internal DAC channel 1 (pin25) on ESP32
   out = new AudioOutputI2S();
   mod = new AudioGeneratorMOD();

@@ -5,14 +5,14 @@
 #else
     #include <ESP8266WiFi.h>
 #endif
-#include "AudioFileSourceSPIFFS.h"
+#include "AudioSourceSPIFFS.h"
 #include "AudioGeneratorOpus.h"
 #include "AudioOutputI2S.h"
 
 // The includes OPUS file is from Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 3.0, http://creativecommons.org/licenses/by/3.0/
 
 AudioGeneratorOpus *opus;
-AudioFileSourceSPIFFS *file;
+AudioSourceSPIFFS *file;
 AudioOutputI2S *out;
 
 void setup()
@@ -24,7 +24,7 @@ void setup()
   Serial.printf("Sample Opus playback begins...\n");
 
   audioLogger = &Serial;
-  file = new AudioFileSourceSPIFFS("/gs-16b-2c-44100hz.opus");
+  file = new AudioSourceSPIFFS("/gs-16b-2c-44100hz.opus");
   out = new AudioOutputI2S();
   opus = new AudioGeneratorOpus();
   opus->begin(file, out);

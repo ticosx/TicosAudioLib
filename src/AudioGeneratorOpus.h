@@ -30,7 +30,7 @@ class AudioGeneratorOpus : public AudioGenerator
   public:
     AudioGeneratorOpus();
     virtual ~AudioGeneratorOpus() override;
-    virtual bool begin(AudioFileSource *source, AudioOutput *output) override;
+    virtual bool begin(AudioSource *source, AudioOutput *output) override;
     virtual bool loop() override;
     virtual bool stop() override;
     virtual bool isRunning() override;

@@ -24,8 +24,8 @@
 #else
     #include <ESP8266WiFi.h>
 #endif
-#include "AudioFileSourceICYStream.h"
-#include "AudioFileSourceBuffer.h"
+#include "AudioSourceICYStream.h"
+#include "AudioSourceBuffer.h"
 #include "AudioGeneratorMP3.h"
 #include "AudioGeneratorAAC.h"
 #include "AudioOutputI2S.h"
@@ -48,8 +48,8 @@ const char* password = STAPSK;
 WiFiServer server(80);
 
 AudioGenerator *decoder = NULL;
-AudioFileSourceICYStream *file = NULL;
-AudioFileSourceBuffer *buff = NULL;
+AudioSourceICYStream *file = NULL;
+AudioSourceBuffer *buff = NULL;
 AudioOutputI2S *out = NULL;
 
 int volume = 100;
@@ -307,10 +307,10 @@ void StartNewURL()
   SaveSettings();
   Serial.printf_P(PSTR("Saved settings\n"));
   
-  file = new AudioFileSourceICYStream(url);
+  file = new AudioSourceICYStream(url);
   Serial.printf_P(PSTR("created icystream\n"));
   file->RegisterMetadataCB(MDCallback, NULL);
-  buff = new AudioFileSourceBuffer(file, preallocateBuffer, preallocateBufferSize);
+  buff = new AudioSourceBuffer(file, preallocateBuffer, preallocateBufferSize);
   Serial.printf_P(PSTR("created buffer\n"));
   buff->RegisterStatusCB(StatusCallback, NULL);
   decoder = isAAC ? (AudioGenerator*) new AudioGeneratorAAC(preallocateCodec, preallocateCodecSize) : (AudioGenerator*) new AudioGeneratorMP3(preallocateCodec, preallocateCodecSize);

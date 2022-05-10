@@ -1,6 +1,6 @@
 /*
-  AudioRecorderSource
-  Base class of a recorder source
+  AudioSourceID3
+  ID3 filter that extracts any ID3 fields and sends to CB function
   
   Copyright (C) 2017  Earle F. Philhower, III
 
@@ -18,26 +18,31 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef _AUDIORECORDERSOURCE_H
-#define _AUDIORECORDERSOURCE_H
+#ifndef _AUDIOSOURCEID3_H
+#define _AUDIOSOURCEID3_H
 
 #include <Arduino.h>
+
 #include "AudioSource.h"
 
-class AudioRecorderSource : public AudioSource
+class AudioSourceID3 : public AudioSource
 {
-
   public:
-    AudioRecorderSource(){}
-    virtual ~AudioRecorderSource() override {};
+    AudioSourceID3(AudioSource *src);
+    virtual ~AudioSourceID3() override;
     
-    virtual bool open(uint16_t hertz, uint8_t bps, uint8_t channels) {this->hertz=hertz;this->bps=bps;this->channels=channels;return true;};
+    virtual uint32_t read(void *data, uint32_t len) override;
+    virtual bool seek(int32_t pos, int dir) override;
+    virtual bool close() override;
+    virtual bool isOpen() override;
+    virtual uint32_t getSize() override;
+    virtual uint32_t getPos() override;
 
-  protected:
-    uint16_t hertz;
-    uint8_t bps;
-    uint8_t channels;
+  private:
+    AudioSource *src;
+    bool checked;
 };
+
 
 #endif
 

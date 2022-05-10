@@ -9,7 +9,7 @@
 #endif
 
 #include <time.h>
-#include "AudioFileSourcePROGMEM.h"
+#include "AudioSourcePROGMEM.h"
 #include "AudioGeneratorTalkie.h"
 #include "AudioOutputI2S.h"
 

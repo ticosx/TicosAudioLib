@@ -32,7 +32,7 @@ class AudioGeneratorMP3 : public AudioGenerator
     AudioGeneratorMP3(void *preallocateSpace, int preallocateSize);
     AudioGeneratorMP3(void *buff, int buffSize, void *stream, int streamSize, void *frame, int frameSize, void *synth, int synthSize);
     virtual ~AudioGeneratorMP3() override;
-    virtual bool begin(AudioFileSource *source, AudioOutput *output) override;
+    virtual bool begin(AudioSource *source, AudioOutput *output) override;
     virtual bool loop() override;
     virtual bool stop() override;
     virtual bool isRunning() override;

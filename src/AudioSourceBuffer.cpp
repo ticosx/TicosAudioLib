@@ -1,5 +1,5 @@
 /*
-  AudioFileSourceBuffer
+  AudioSourceBuffer
   Double-buffered file source using system RAM
   
   Copyright (C) 2017  Earle F. Philhower, III
@@ -19,15 +19,15 @@
 */
 
 #include <Arduino.h>
-#include "AudioFileSourceBuffer.h"
+#include "AudioSourceBuffer.h"
 
 #pragma GCC optimize ("O3")
 
-AudioFileSourceBuffer::AudioFileSourceBuffer(AudioFileSource *source, uint32_t buffSizeBytes)
+AudioSourceBuffer::AudioSourceBuffer(AudioSource *source, uint32_t buffSizeBytes)
 {
   buffSize = buffSizeBytes;
   buffer = (uint8_t*)malloc(sizeof(uint8_t) * buffSize);
-  if (!buffer) audioLogger->printf_P(PSTR("Unable to allocate AudioFileSourceBuffer::buffer[]\n"));
+  if (!buffer) audioLogger->printf_P(PSTR("Unable to allocate AudioSourceBuffer::buffer[]\n"));
   deallocateBuffer = true;
   writePtr = 0;
   readPtr = 0;
@@ -36,7 +36,7 @@ AudioFileSourceBuffer::AudioFileSourceBuffer(AudioFileSource *source, uint32_t b
   filled = false;
 }
 
-AudioFileSourceBuffer::AudioFileSourceBuffer(AudioFileSource *source, void *inBuff, uint32_t buffSizeBytes)
+AudioSourceBuffer::AudioSourceBuffer(AudioSource *source, void *inBuff, uint32_t buffSizeBytes)
 {
   buffSize = buffSizeBytes;
   buffer = (uint8_t*)inBuff;
@@ -48,13 +48,13 @@ AudioFileSourceBuffer::AudioFileSourceBuffer(AudioFileSource *source, void *inBu
   filled = false;
 }
 
-AudioFileSourceBuffer::~AudioFileSourceBuffer()
+AudioSourceBuffer::~AudioSourceBuffer()
 {
   if (deallocateBuffer) free(buffer);
   buffer = NULL;
 }
 
-bool AudioFileSourceBuffer::seek(int32_t pos, int dir)
+bool AudioSourceBuffer::seek(int32_t pos, int dir)
 {
   if(dir == SEEK_CUR && (readPtr+pos) < length) {
     readPtr += pos;
@@ -68,34 +68,34 @@ bool AudioFileSourceBuffer::seek(int32_t pos, int dir)
   }
 }
 
-bool AudioFileSourceBuffer::close()
+bool AudioSourceBuffer::close()
 {
   if (deallocateBuffer) free(buffer);
   buffer = NULL;
   return src->close();
 }
 
-bool AudioFileSourceBuffer::isOpen()
+bool AudioSourceBuffer::isOpen()
 {
   return src->isOpen();
 }
 
-uint32_t AudioFileSourceBuffer::getSize()
+uint32_t AudioSourceBuffer::getSize()
 {
   return src->getSize();
 }
 
-uint32_t AudioFileSourceBuffer::getPos()
+uint32_t AudioSourceBuffer::getPos()
 {
   return src->getPos();
 }
 
-uint32_t AudioFileSourceBuffer::getFillLevel()
+uint32_t AudioSourceBuffer::getFillLevel()
 {
   return length;
 }
 
-uint32_t AudioFileSourceBuffer::read(void *data, uint32_t len)
+uint32_t AudioSourceBuffer::read(void *data, uint32_t len)
 {
   if (!buffer) return src->read(data, len);
 
@@ -147,7 +147,7 @@ uint32_t AudioFileSourceBuffer::read(void *data, uint32_t len)
   return bytes;
 }
 
-void AudioFileSourceBuffer::fill()
+void AudioSourceBuffer::fill()
 {
   if (!buffer) return;
 
@@ -181,7 +181,7 @@ void AudioFileSourceBuffer::fill()
 
 
 
-bool AudioFileSourceBuffer::loop()
+bool AudioSourceBuffer::loop()
 {
   if (!src->loop()) return false;
   fill();

@@ -31,7 +31,7 @@ class AudioGeneratorFLAC : public AudioGenerator
   public:
     AudioGeneratorFLAC();
     virtual ~AudioGeneratorFLAC() override;
-    virtual bool begin(AudioFileSource *source, AudioOutput *output) override;
+    virtual bool begin(AudioSource *source, AudioOutput *output) override;
     virtual bool loop() override;
     virtual bool stop() override;
     virtual bool isRunning() override;

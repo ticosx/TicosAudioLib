@@ -5,8 +5,8 @@
 #else
     #include <ESP8266WiFi.h>
 #endif
-#include "AudioFileSourceICYStream.h"
-#include "AudioFileSourceBuffer.h"
+#include "AudioSourceICYStream.h"
+#include "AudioSourceBuffer.h"
 #include "AudioGeneratorMP3.h"
 //#include "AudioOutputI2SNoDAC.h"
 #include "AudioOutputSPDIF.h"
@@ -39,8 +39,8 @@ const char *URL="http://streamingv2.shoutcast.com/radiofreccia";
 // const char *URL="http://192.168.1.121:9000/stream.mp3";
 
 AudioGeneratorMP3 *mp3;
-AudioFileSourceICYStream *file;
-AudioFileSourceBuffer *buff;
+AudioSourceICYStream *file;
+AudioSourceBuffer *buff;
 
 // Output device is SPDIF
 AudioOutputSPDIF *out;
@@ -94,12 +94,12 @@ void setup()
   Serial.println("Connected");
 
   audioLogger = &Serial;
-  file = new AudioFileSourceICYStream(URL);
+  file = new AudioSourceICYStream(URL);
 
   // Commented out for performance issues with high rate MP3 stream
   //file->RegisterMetadataCB(MDCallback, (void*)"ICY");
 
-  buff = new AudioFileSourceBuffer(file, 4096);	// Doubled form default 2048
+  buff = new AudioSourceBuffer(file, 4096);	// Doubled form default 2048
 
   // Commented out for performance issues with high rate MP3 stream
   //buff->RegisterStatusCB(StatusCallback, (void*)"buffer");

@@ -1,6 +1,6 @@
 /*
-  AudioFileSourceHTTPStream
-  Connect to a HTTP based streaming service
+  AudioSourceFS
+  Input Arduion "file" to be used by AudioGenerator
   
   Copyright (C) 2017  Earle F. Philhower, III
 
@@ -18,31 +18,22 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#if defined(ESP32) || defined(ESP8266)
-#pragma once
+#ifndef _AUDIOSOURCELITTLEFS_H
+#define _AUDIOSOURCELITTLEFS_H
 
 #include <Arduino.h>
-#ifdef ESP32
-  #include <HTTPClient.h>
-#else
-  #include <ESP8266HTTPClient.h>
-#endif
+#include <LittleFS.h>
 
-#include "AudioFileSourceHTTPStream.h"
+#include "AudioSource.h"
+#include "AudioSourceFS.h"
 
-class AudioFileSourceICYStream : public AudioFileSourceHTTPStream
+class AudioSourceLittleFS : public AudioSourceFS
 {
   public:
-    AudioFileSourceICYStream();
-    AudioFileSourceICYStream(const char *url);
-    virtual ~AudioFileSourceICYStream() override;
-    
-    virtual bool open(const char *url) override;
-
-  private:
-    virtual uint32_t readInternal(void *data, uint32_t len, bool nonBlock) override;
-    int icyMetaInt;
-    int icyByteCount;
+    AudioSourceLittleFS() : AudioSourceFS(LittleFS) { };
+    AudioSourceLittleFS(const char *filename) : AudioSourceFS(LittleFS, filename) {};
+    // Others are inherited from base
 };
 
 #endif
+

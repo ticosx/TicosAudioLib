@@ -5,8 +5,8 @@
 #else
     #include <ESP8266WiFi.h>
 #endif
-#include "AudioFileSourceICYStream.h"
-#include "AudioFileSourceBuffer.h"
+#include "AudioSourceICYStream.h"
+#include "AudioSourceBuffer.h"
 #include "AudioGeneratorMP3.h"
 #include "AudioOutputI2SNoDAC.h"
 
@@ -25,8 +25,8 @@ const char* password = STAPSK;
 const char *URL="http://kvbstreams.dyndns.org:8000/wkvi-am";
 
 AudioGeneratorMP3 *mp3;
-AudioFileSourceICYStream *file;
-AudioFileSourceBuffer *buff;
+AudioSourceICYStream *file;
+AudioSourceBuffer *buff;
 AudioOutputI2SNoDAC *out;
 
 // Called when a metadata event occurs (i.e. an ID3 tag, an ICY block, etc.
@@ -77,9 +77,9 @@ void setup()
   Serial.println("Connected");
 
   audioLogger = &Serial;
-  file = new AudioFileSourceICYStream(URL);
+  file = new AudioSourceICYStream(URL);
   file->RegisterMetadataCB(MDCallback, (void*)"ICY");
-  buff = new AudioFileSourceBuffer(file, 2048);
+  buff = new AudioSourceBuffer(file, 2048);
   buff->RegisterStatusCB(StatusCallback, (void*)"buffer");
   out = new AudioOutputI2SNoDAC();
   mp3 = new AudioGeneratorMP3();

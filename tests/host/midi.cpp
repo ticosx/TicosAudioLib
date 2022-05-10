@@ -1,5 +1,5 @@
 #include <Arduino.h>
-#include "AudioFileSourceSTDIO.h"
+#include "AudioSourceSTDIO.h"
 #include "AudioOutputSTDIO.h"
 #include "AudioGeneratorMIDI.h"
 
@@ -11,8 +11,8 @@ int main(int argc, char **argv)
 {
     (void) argc;
     (void) argv;
-    AudioFileSourceSTDIO *midifile = new AudioFileSourceSTDIO(MIDI);
-    AudioFileSourceSTDIO *sf2file = new AudioFileSourceSTDIO(SF2);
+    AudioSourceSTDIO *midifile = new AudioSourceSTDIO(MIDI);
+    AudioSourceSTDIO *sf2file = new AudioSourceSTDIO(SF2);
     AudioOutputSTDIO *out = new AudioOutputSTDIO();
     out->SetFilename("midi.wav");
     AudioGeneratorMIDI *midi = new AudioGeneratorMIDI();

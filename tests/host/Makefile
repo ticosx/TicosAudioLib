@@ -9,9 +9,9 @@ libhelix_mp3=../../src/libhelix-mp3/dequant.c ../../src/libhelix-mp3/mp3dec.c ..
 ../../src/libhelix-mp3/bitstream.c ../../src/libhelix-mp3/imdct.c ../../src/libhelix-mp3/subband.c ../../src/libhelix-mp3/huffman.c \
 ../../src/libhelix-mp3/mp3tabs.c
 
-audiolib=../../src/AudioGeneratorWAV.cpp ../../src/AudioGeneratorMIDI.cpp ../../src/AudioFileSourceSTDIO.cpp ../../src/AudioOutputSTDIO.cpp \
-../../src/AudioFileSourceID3.cpp ../../src/AudioGeneratorAAC.cpp ../../src/AudioGeneratorMP3.cpp ../../src/AudioOutputFilterDecimate.cpp \
-../../src/AudioGeneratorFLAC.cpp ../../src/AudioGeneratorMOD.cpp ../../src/AudioFileSourceBuffer.cpp ../../src/AudioGeneratorMP3a.cpp \
+audiolib=../../src/AudioGeneratorWAV.cpp ../../src/AudioGeneratorMIDI.cpp ../../src/AudioSourceSTDIO.cpp ../../src/AudioOutputSTDIO.cpp \
+../../src/AudioSourceID3.cpp ../../src/AudioGeneratorAAC.cpp ../../src/AudioGeneratorMP3.cpp ../../src/AudioOutputFilterDecimate.cpp \
+../../src/AudioGeneratorFLAC.cpp ../../src/AudioGeneratorMOD.cpp ../../src/AudioSourceBuffer.cpp ../../src/AudioGeneratorMP3a.cpp \
 Serial.cpp
 
 libhelix_aac=../../src/libhelix-aac/decelmnt.c ../../src/libhelix-aac/dct4.c ../../src/libhelix-aac/dequant.c ../../src/libhelix-aac/sbrhuff.c \
@@ -88,39 +88,39 @@ all: mp3 aac wav midi opus flac mod
 mp3: FORCE
 	rm -f *.o
 	gcc $(CCOPTS) -c $(libmad) -I ../../src/ -I.
-	g++ $(CPPOPTS) -o mp3 mp3.cpp Serial.cpp *.o ../../src/AudioFileSourceSTDIO.cpp ../../src/AudioOutputSTDIO.cpp ../../src/AudioFileSourceID3.cpp ../../src/AudioFileSourceBuffer.cpp ../../src/AudioGeneratorMP3.cpp ../../src/AudioOutputMixer.cpp ../../src/AudioLogger.cpp  -I ../../src/ -I.
+	g++ $(CPPOPTS) -o mp3 mp3.cpp Serial.cpp *.o ../../src/AudioSourceSTDIO.cpp ../../src/AudioOutputSTDIO.cpp ../../src/AudioSourceID3.cpp ../../src/AudioSourceBuffer.cpp ../../src/AudioGeneratorMP3.cpp ../../src/AudioOutputMixer.cpp ../../src/AudioLogger.cpp  -I ../../src/ -I.
 	rm -f *.o
 	echo valgrind --leak-check=full --track-origins=yes -v --error-limit=no --show-leak-kinds=all ./mp3
 
 aac: FORCE
 	rm -f *.o
 	gcc $(CCOPTS) -DUSE_DEFAULT_STDLIB -c $(libhelix_aac) -I ../../src/ -I.
-	g++ $(CPPOPTS) -o aac aac.cpp Serial.cpp *.o ../../src/AudioFileSourceSTDIO.cpp ../../src/AudioOutputSTDIO.cpp ../../src/AudioFileSourceID3.cpp ../../src/AudioGeneratorAAC.cpp  ../../src/AudioLogger.cpp -I ../../src/ -I.
+	g++ $(CPPOPTS) -o aac aac.cpp Serial.cpp *.o ../../src/AudioSourceSTDIO.cpp ../../src/AudioOutputSTDIO.cpp ../../src/AudioSourceID3.cpp ../../src/AudioGeneratorAAC.cpp  ../../src/AudioLogger.cpp -I ../../src/ -I.
 	rm -f *.o
 	echo valgrind --leak-check=full --track-origins=yes -v --error-limit=no --show-leak-kinds=all ./aac
 
 flac: FORCE
 	rm -f *.o
 	gcc $(CCOPTS) -DUSE_DEFAULT_STDLIB -c $(libflac) -I ../../src/ -I ../../src/libflac -I.
-	g++ $(CPPOPTS) -o flac flac.cpp Serial.cpp *.o ../../src/AudioFileSourceSTDIO.cpp ../../src/AudioOutputSTDIO.cpp ../../src/AudioFileSourceID3.cpp ../../src/AudioGeneratorFLAC.cpp  ../../src/AudioLogger.cpp -I ../../src/ -I.
+	g++ $(CPPOPTS) -o flac flac.cpp Serial.cpp *.o ../../src/AudioSourceSTDIO.cpp ../../src/AudioOutputSTDIO.cpp ../../src/AudioSourceID3.cpp ../../src/AudioGeneratorFLAC.cpp  ../../src/AudioLogger.cpp -I ../../src/ -I.
 	rm -f *.o
 	echo valgrind --leak-check=full --track-origins=yes -v --error-limit=no --show-leak-kinds=all ./flac
 
 mod: FORCE
 	rm -f *.o
-	g++ $(CPPOPTS) -o mod mod.cpp Serial.cpp ../../src/AudioFileSourcePROGMEM.cpp ../../src/AudioOutputSTDIO.cpp ../../src/AudioGeneratorMOD.cpp  ../../src/AudioLogger.cpp -I ../../src/ -I.
+	g++ $(CPPOPTS) -o mod mod.cpp Serial.cpp ../../src/AudioSourcePROGMEM.cpp ../../src/AudioOutputSTDIO.cpp ../../src/AudioGeneratorMOD.cpp  ../../src/AudioLogger.cpp -I ../../src/ -I.
 	rm -f *.o
 	echo valgrind --leak-check=full --track-origins=yes -v --error-limit=no --show-leak-kinds=all ./mod
 
 wav: FORCE
 	rm -f *.o
-	g++ $(CPPOPTS) -o wav wav.cpp Serial.cpp  ../../src/AudioFileSourceSTDIO.cpp ../../src/AudioOutputSTDIO.cpp ../../src/AudioGeneratorWAV.cpp   ../../src/AudioLogger.cpp -I ../../src/ -I.
+	g++ $(CPPOPTS) -o wav wav.cpp Serial.cpp  ../../src/AudioSourceSTDIO.cpp ../../src/AudioOutputSTDIO.cpp ../../src/AudioGeneratorWAV.cpp   ../../src/AudioLogger.cpp -I ../../src/ -I.
 	rm -f *.o
 	echo valgrind --leak-check=full --track-origins=yes -v --error-limit=no --show-leak-kinds=all ./wav
 
 midi: FORCE
 	rm -f *.o
-	g++ $(CPPOPTS) -o midi midi.cpp Serial.cpp  ../../src/AudioFileSourceSTDIO.cpp ../../src/AudioOutputSTDIO.cpp ../../src/AudioGeneratorMIDI.cpp   ../../src/AudioLogger.cpp -I ../../src/ -I.
+	g++ $(CPPOPTS) -o midi midi.cpp Serial.cpp  ../../src/AudioSourceSTDIO.cpp ../../src/AudioOutputSTDIO.cpp ../../src/AudioGeneratorMIDI.cpp   ../../src/AudioLogger.cpp -I ../../src/ -I.
 	rm -f *.o
 	echo valgrind --leak-check=full --track-origins=yes -v --error-limit=no --show-leak-kinds=all ./midi
 
@@ -129,7 +129,7 @@ opus: FORCE
 	gcc $(CCOPTS) -DUSE_DEFAULT_STDLIB -c $(libogg) -I ../../src/ -I.
 	gcc $(CCOPTS) -DUSE_DEFAULT_STDLIB -c $(libopus) -I ../../src/ -I.
 	gcc $(CCOPTS) -DUSE_DEFAULT_STDLIB -c $(opusfile) -I ../../src/ -I.
-	g++ $(CPPOPTS) -o opus opus.cpp Serial.cpp *.o ../../src/AudioFileSourceSTDIO.cpp ../../src/AudioOutputSTDIO.cpp ../../src/AudioGeneratorOpus.cpp  ../../src/AudioLogger.cpp -I ../../src/ -I.
+	g++ $(CPPOPTS) -o opus opus.cpp Serial.cpp *.o ../../src/AudioSourceSTDIO.cpp ../../src/AudioOutputSTDIO.cpp ../../src/AudioGeneratorOpus.cpp  ../../src/AudioLogger.cpp -I ../../src/ -I.
 	rm -f *.o
 	echo valgrind --leak-check=full --track-origins=yes -v --error-limit=no --show-leak-kinds=all ./opus
 

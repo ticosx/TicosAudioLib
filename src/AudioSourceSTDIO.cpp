@@ -1,5 +1,5 @@
 /*
-  AudioFileSourceSTDIO
+  AudioSourceSTDIO
   Input STDIO "file" to be used by AudioGenerator
   Only for hot-based testing
   
@@ -23,32 +23,32 @@
 #ifndef ARDUINO
 #include <time.h>
 
-#include "AudioFileSourceSTDIO.h"
+#include "AudioSourceSTDIO.h"
 
-AudioFileSourceSTDIO::AudioFileSourceSTDIO()
+AudioSourceSTDIO::AudioSourceSTDIO()
 {
   f = NULL;
   srand(time(NULL));
 }
 
-AudioFileSourceSTDIO::AudioFileSourceSTDIO(const char *filename)
+AudioSourceSTDIO::AudioSourceSTDIO(const char *filename)
 {
   open(filename);
 }
 
-bool AudioFileSourceSTDIO::open(const char *filename)
+bool AudioSourceSTDIO::open(const char *filename)
 {
   f = fopen(filename, "rb");
   return f;
 }
 
-AudioFileSourceSTDIO::~AudioFileSourceSTDIO()
+AudioSourceSTDIO::~AudioSourceSTDIO()
 {
   if (f) fclose(f);
   f = NULL;
 }
 
-uint32_t AudioFileSourceSTDIO::read(void *data, uint32_t len)
+uint32_t AudioSourceSTDIO::read(void *data, uint32_t len)
 {
 //  if (rand() % 100 == 69) { // Give 0 data 1%
 //    printf("0 read\n");
@@ -67,24 +67,24 @@ uint32_t AudioFileSourceSTDIO::read(void *data, uint32_t len)
   return ret;
 }
 
-bool AudioFileSourceSTDIO::seek(int32_t pos, int dir)
+bool AudioSourceSTDIO::seek(int32_t pos, int dir)
 {
   return fseek(f, pos, dir) == 0;
 }
 
-bool AudioFileSourceSTDIO::close()
+bool AudioSourceSTDIO::close()
 {
   fclose(f);
   f = NULL;
   return true;
 }
 
-bool AudioFileSourceSTDIO::isOpen()
+bool AudioSourceSTDIO::isOpen()
 {
   return f?true:false;
 }
 
-uint32_t AudioFileSourceSTDIO::getSize()
+uint32_t AudioSourceSTDIO::getSize()
 {
   if (!f) return 0;
   uint32_t p = ftell(f);

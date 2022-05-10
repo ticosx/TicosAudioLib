@@ -1,5 +1,5 @@
 /*
-  AudioFileSourcePROGMEM
+  AudioSourcePROGMEM
   Store a "file" as a PROGMEM array and use it as audio source data
   
   Copyright (C) 2017  Earle F. Philhower, III
@@ -18,9 +18,9 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "AudioFileSourcePROGMEM.h"
+#include "AudioSourcePROGMEM.h"
 
-AudioFileSourcePROGMEM::AudioFileSourcePROGMEM()
+AudioSourcePROGMEM::AudioSourcePROGMEM()
 {
   opened = false;
   progmemData = NULL;
@@ -28,16 +28,16 @@ AudioFileSourcePROGMEM::AudioFileSourcePROGMEM()
   filePointer = 0;
 }
 
-AudioFileSourcePROGMEM::AudioFileSourcePROGMEM(const void *data, uint32_t len)
+AudioSourcePROGMEM::AudioSourcePROGMEM(const void *data, uint32_t len)
 {
   open(data, len);
 }
 
-AudioFileSourcePROGMEM::~AudioFileSourcePROGMEM()
+AudioSourcePROGMEM::~AudioSourcePROGMEM()
 {
 }
 
-bool AudioFileSourcePROGMEM::open(const void *data, uint32_t len)
+bool AudioSourcePROGMEM::open(const void *data, uint32_t len)
 {
   if (!data || !len) return false;
 
@@ -48,18 +48,18 @@ bool AudioFileSourcePROGMEM::open(const void *data, uint32_t len)
   return true;
 }
 
-uint32_t AudioFileSourcePROGMEM::getSize()
+uint32_t AudioSourcePROGMEM::getSize()
 {
   if (!opened) return 0;
   return progmemLen;
 }
 
-bool AudioFileSourcePROGMEM::isOpen()
+bool AudioSourcePROGMEM::isOpen()
 {
   return opened;
 }
 
-bool AudioFileSourcePROGMEM::close()
+bool AudioSourcePROGMEM::close()
 {
   opened = false;
   progmemData = NULL;
@@ -68,7 +68,7 @@ bool AudioFileSourcePROGMEM::close()
   return true;
 }  
 
-bool AudioFileSourcePROGMEM::seek(int32_t pos, int dir)
+bool AudioSourcePROGMEM::seek(int32_t pos, int dir)
 {
   if (!opened) return false;
   uint32_t newPtr;
@@ -83,7 +83,7 @@ bool AudioFileSourcePROGMEM::seek(int32_t pos, int dir)
   return true;
 }
 
-uint32_t AudioFileSourcePROGMEM::read(void *data, uint32_t len)
+uint32_t AudioSourcePROGMEM::read(void *data, uint32_t len)
 {
   if (!opened) return 0;
   if (filePointer >= progmemLen) return 0;

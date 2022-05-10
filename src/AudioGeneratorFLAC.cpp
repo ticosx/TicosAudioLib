@@ -40,7 +40,7 @@ AudioGeneratorFLAC::~AudioGeneratorFLAC()
   flac = NULL;
 }
 
-bool AudioGeneratorFLAC::begin(AudioFileSource *source, AudioOutput *output)
+bool AudioGeneratorFLAC::begin(AudioSource *source, AudioOutput *output)
 {
   if (!source) return false;
   file = source;

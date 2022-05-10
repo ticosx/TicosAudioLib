@@ -1,5 +1,5 @@
 /*
-  AudioFileSourceFunction
+  AudioSourceFunction
   Audio output generator which can generate WAV file data from function
 
   Copyright (C) 2021  Hideaki Tai
@@ -18,16 +18,16 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef _AUDIOFILESOURCEFUNCTION_H
-#define _AUDIOFILESOURCEFUNCTION_H
+#ifndef _AUDIOSOURCEFUNCTION_H
+#define _AUDIOSOURCEFUNCTION_H
 
 #include <Arduino.h>
 #include <vector>
 #include <functional>
 
-#include "AudioFileSource.h"
+#include "AudioSource.h"
 
-class AudioFileSourceFunction : public AudioFileSource {
+class AudioSourceFunction : public AudioSource {
   union WavHeader {
     struct {
       // RIFF chunk
@@ -80,8 +80,8 @@ class AudioFileSourceFunction : public AudioFileSource {
   bool is_unique;
 
 public:
-  AudioFileSourceFunction(float sec, uint16_t channels = 1, uint32_t sample_per_sec = 8000, uint16_t bits_per_sample = 16);
-  virtual ~AudioFileSourceFunction() override;
+  AudioSourceFunction(float sec, uint16_t channels = 1, uint32_t sample_per_sec = 8000, uint16_t bits_per_sample = 16);
+  virtual ~AudioSourceFunction() override;
 
   template <typename F, typename... Fs>
   bool addAudioGenerators(const F& f, Fs&&... fs) {
@@ -116,4 +116,4 @@ public:
   virtual uint32_t getPos() override;
 };
 
-#endif  // _AUDIOFILESOURCEFUNCTION_H
+#endif  // _AUDIOSOURCEFUNCTION_H

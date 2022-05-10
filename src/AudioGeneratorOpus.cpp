@@ -39,7 +39,7 @@ AudioGeneratorOpus::~AudioGeneratorOpus()
 
 #define OPUS_BUFF 1024
 
-bool AudioGeneratorOpus::begin(AudioFileSource *source, AudioOutput *output)
+bool AudioGeneratorOpus::begin(AudioSource *source, AudioOutput *output)
 {
   buff = (int16_t*)malloc(OPUS_BUFF * sizeof(int16_t));
   if (!buff) return false;

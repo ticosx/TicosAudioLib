@@ -1,6 +1,6 @@
 #include <Arduino.h>
 
-#include "AudioFileSourcePROGMEM.h"
+#include "AudioSourcePROGMEM.h"
 #include "AudioGeneratorWAV.h"
 #include "AudioOutputI2SNoDAC.h"
 
@@ -8,7 +8,7 @@
 #include "viola.h"
 
 AudioGeneratorWAV *wav;
-AudioFileSourcePROGMEM *file;
+AudioSourcePROGMEM *file;
 AudioOutputI2SNoDAC *out;
 
 void setup()
@@ -18,7 +18,7 @@ void setup()
   Serial.printf("WAV start\n");
 
   audioLogger = &Serial;
-  file = new AudioFileSourcePROGMEM( viola, sizeof(viola) );
+  file = new AudioSourcePROGMEM( viola, sizeof(viola) );
   out = new AudioOutputI2SNoDAC();
   wav = new AudioGeneratorWAV();
   wav->begin(file, out);

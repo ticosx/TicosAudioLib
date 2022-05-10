@@ -2,8 +2,8 @@
 #ifdef ESP32
   #include "SPIFFS.h"
 #endif
-#include "AudioFileSourceSPIFFS.h"
-#include "AudioFileSourceID3.h"
+#include "AudioSourceSPIFFS.h"
+#include "AudioSourceID3.h"
 #include "AudioOutputSPDIF.h"
 #include "AudioGeneratorMP3.h"
 
@@ -13,8 +13,8 @@
 // and download it into 'data' directory. Use the "Tools->ESP8266/ESP32 Sketch Data Upload" 
 // menu to write the MP3 to SPIFFS. Then upload the sketch normally. 
 
-AudioFileSourceSPIFFS *file;
-AudioFileSourceID3 *id3;
+AudioSourceSPIFFS *file;
+AudioSourceID3 *id3;
 AudioOutputSPDIF *out;
 AudioGeneratorMP3 *mp3;
 
@@ -47,7 +47,7 @@ void setup()
   Serial.println();
   audioLogger = &Serial;
   SPIFFS.begin();
-  file = new AudioFileSourceSPIFFS(); 
+  file = new AudioSourceSPIFFS(); 
   id3 = NULL; 
   out = new AudioOutputSPDIF();
   mp3 = new AudioGeneratorMP3();
@@ -79,7 +79,7 @@ void setup()
 #endif
 
   if (fileName.length() > 0) {
-    id3 = new AudioFileSourceID3(file);
+    id3 = new AudioSourceID3(file);
     id3->RegisterMetadataCB(MDCallback, (void*)"ID3TAG");
     mp3->begin(id3, out);
     Serial.printf("Playback of '%s' begins...\n", fileName.c_str());

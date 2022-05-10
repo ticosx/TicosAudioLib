@@ -1,5 +1,5 @@
 /*
-  AudioFileSourceHTTPStream
+  AudioSourceHTTPStream
   Streaming HTTP source
 
   Copyright (C) 2017  Earle F. Philhower, III
@@ -20,23 +20,23 @@
 
 #if defined(ESP32) || defined(ESP8266)
 
-#include "AudioFileSourceHTTPStream.h"
+#include "AudioSourceHTTPStream.h"
 
-AudioFileSourceHTTPStream::AudioFileSourceHTTPStream()
+AudioSourceHTTPStream::AudioSourceHTTPStream()
 {
   pos = 0;
   reconnectTries = 0;
   saveURL[0] = 0;
 }
 
-AudioFileSourceHTTPStream::AudioFileSourceHTTPStream(const char *url)
+AudioSourceHTTPStream::AudioSourceHTTPStream(const char *url)
 {
   saveURL[0] = 0;
   reconnectTries = 0;
   open(url);
 }
 
-bool AudioFileSourceHTTPStream::open(const char *url)
+bool AudioSourceHTTPStream::open(const char *url)
 {
   pos = 0;
   http.begin(client, url);
@@ -56,30 +56,30 @@ bool AudioFileSourceHTTPStream::open(const char *url)
   return true;
 }
 
-AudioFileSourceHTTPStream::~AudioFileSourceHTTPStream()
+AudioSourceHTTPStream::~AudioSourceHTTPStream()
 {
   http.end();
 }
 
-uint32_t AudioFileSourceHTTPStream::read(void *data, uint32_t len)
+uint32_t AudioSourceHTTPStream::read(void *data, uint32_t len)
 {
   if (data==NULL) {
-    audioLogger->printf_P(PSTR("ERROR! AudioFileSourceHTTPStream::read passed NULL data\n"));
+    audioLogger->printf_P(PSTR("ERROR! AudioSourceHTTPStream::read passed NULL data\n"));
     return 0;
   }
   return readInternal(data, len, false);
 }
 
-uint32_t AudioFileSourceHTTPStream::readNonBlock(void *data, uint32_t len)
+uint32_t AudioSourceHTTPStream::readNonBlock(void *data, uint32_t len)
 {
   if (data==NULL) {
-    audioLogger->printf_P(PSTR("ERROR! AudioFileSourceHTTPStream::readNonBlock passed NULL data\n"));
+    audioLogger->printf_P(PSTR("ERROR! AudioSourceHTTPStream::readNonBlock passed NULL data\n"));
     return 0;
   }
   return readInternal(data, len, true);
 }
 
-uint32_t AudioFileSourceHTTPStream::readInternal(void *data, uint32_t len, bool nonBlock)
+uint32_t AudioSourceHTTPStream::readInternal(void *data, uint32_t len, bool nonBlock)
 {
 retry:
   if (!http.connected()) {
@@ -126,31 +126,31 @@ retry:
   return read;
 }
 
-bool AudioFileSourceHTTPStream::seek(int32_t pos, int dir)
+bool AudioSourceHTTPStream::seek(int32_t pos, int dir)
 {
-  audioLogger->printf_P(PSTR("ERROR! AudioFileSourceHTTPStream::seek not implemented!"));
+  audioLogger->printf_P(PSTR("ERROR! AudioSourceHTTPStream::seek not implemented!"));
   (void) pos;
   (void) dir;
   return false;
 }
 
-bool AudioFileSourceHTTPStream::close()
+bool AudioSourceHTTPStream::close()
 {
   http.end();
   return true;
 }
 
-bool AudioFileSourceHTTPStream::isOpen()
+bool AudioSourceHTTPStream::isOpen()
 {
   return http.connected();
 }
 
-uint32_t AudioFileSourceHTTPStream::getSize()
+uint32_t AudioSourceHTTPStream::getSize()
 {
   return size;
 }
 
-uint32_t AudioFileSourceHTTPStream::getPos()
+uint32_t AudioSourceHTTPStream::getPos()
 {
   return pos;
 }

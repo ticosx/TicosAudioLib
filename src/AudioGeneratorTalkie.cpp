@@ -67,7 +67,7 @@ bool AudioGeneratorTalkie::say(const uint8_t *data, size_t len, bool async) {
   return true;
 }
 
-bool AudioGeneratorTalkie::begin(AudioFileSource *source, AudioOutput *output)
+bool AudioGeneratorTalkie::begin(AudioSource *source, AudioOutput *output)
 {
   if (!output) return false;
   this->output = output;

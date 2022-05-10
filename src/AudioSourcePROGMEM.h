@@ -1,6 +1,6 @@
 /*
-  AudioFileSourceID3
-  ID3 filter that extracts any ID3 fields and sends to CB function
+  AudioSourcePROGMEM
+  Store a "file" as a PROGMEM array and use it as audio source data
   
   Copyright (C) 2017  Earle F. Philhower, III
 
@@ -18,31 +18,32 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef _AUDIOFILESOURCEID3_H
-#define _AUDIOFILESOURCEID3_H
+#ifndef _AUDIOSOURCEPROGMEM_H
+#define _AUDIOSOURCEPROGMEM_H
 
-#include <Arduino.h>
+#include "AudioSource.h"
 
-#include "AudioFileSource.h"
-
-class AudioFileSourceID3 : public AudioFileSource
+class AudioSourcePROGMEM : public AudioSource
 {
   public:
-    AudioFileSourceID3(AudioFileSource *src);
-    virtual ~AudioFileSourceID3() override;
-    
+    AudioSourcePROGMEM();
+    AudioSourcePROGMEM(const void *data, uint32_t len);
+    virtual ~AudioSourcePROGMEM() override;
     virtual uint32_t read(void *data, uint32_t len) override;
     virtual bool seek(int32_t pos, int dir) override;
     virtual bool close() override;
     virtual bool isOpen() override;
     virtual uint32_t getSize() override;
-    virtual uint32_t getPos() override;
+    virtual uint32_t getPos() override { if (!opened) return 0; else return filePointer; };
+
+    bool open(const void *data, uint32_t len);
 
   private:
-    AudioFileSource *src;
-    bool checked;
+    bool opened;
+    const void *progmemData;
+    uint32_t progmemLen;
+    uint32_t filePointer;
 };
-
 
 #endif
 

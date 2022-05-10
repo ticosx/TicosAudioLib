@@ -3,19 +3,19 @@
 // to miniimize build times.
 
 // Input stage
-#include "AudioFileSourceBuffer.h"
-#include "AudioFileSourceFATFS.h"
-#include "AudioFileSourceFS.h"
-#include "AudioFileSource.h"
-#include "AudioFileSourceHTTPStream.h"
-#include "AudioFileSourceICYStream.h"
-#include "AudioFileSourceID3.h"
-#include "AudioFileSourceLittleFS.h"
-#include "AudioFileSourcePROGMEM.h"
-#include "AudioFileSourceSD.h"
-#include "AudioFileSourceSPIFFS.h"
-#include "AudioFileSourceSPIRAMBuffer.h"
-#include "AudioFileSourceSTDIO.h"
+#include "AudioSourceBuffer.h"
+#include "AudioSourceFATFS.h"
+#include "AudioSourceFS.h"
+#include "AudioSource.h"
+#include "AudioSourceHTTPStream.h"
+#include "AudioSourceICYStream.h"
+#include "AudioSourceID3.h"
+#include "AudioSourceLittleFS.h"
+#include "AudioSourcePROGMEM.h"
+#include "AudioSourceSD.h"
+#include "AudioSourceSPIFFS.h"
+#include "AudioSourceSPIRAMBuffer.h"
+#include "AudioSourceSTDIO.h"
 
 // Misc. plumbing
 #include "AudioFileStream.h"

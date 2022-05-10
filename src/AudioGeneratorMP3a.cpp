@@ -142,7 +142,7 @@ done:
   return running;
 }
 
-bool AudioGeneratorMP3a::begin(AudioFileSource *source, AudioOutput *output)
+bool AudioGeneratorMP3a::begin(AudioSource *source, AudioOutput *output)
 {
   if (!source) return false;
   file = source;

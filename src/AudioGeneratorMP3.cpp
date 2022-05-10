@@ -259,7 +259,7 @@ done:
 
 
 
-bool AudioGeneratorMP3::begin(AudioFileSource *source, AudioOutput *output)
+bool AudioGeneratorMP3::begin(AudioSource *source, AudioOutput *output)
 {
   if (!source)  return false;
   file = source;

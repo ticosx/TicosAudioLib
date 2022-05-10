@@ -1,5 +1,5 @@
 #include <Arduino.h>
-#include "AudioFileSourcePROGMEM.h"
+#include "AudioSourcePROGMEM.h"
 #include "AudioOutputSTDIO.h"
 #include "AudioGeneratorMOD.h"
 
@@ -10,7 +10,7 @@ int main(int argc, char **argv)
     (void) argc;
     (void) argv;
 
-    AudioFileSourcePROGMEM *file = new AudioFileSourcePROGMEM(enigma_mod, sizeof(enigma_mod));
+    AudioSourcePROGMEM *file = new AudioSourcePROGMEM(enigma_mod, sizeof(enigma_mod));
     AudioOutputSTDIO *out = new AudioOutputSTDIO();
     out->SetFilename("mod.wav");
     AudioGeneratorMOD *mod = new AudioGeneratorMOD();

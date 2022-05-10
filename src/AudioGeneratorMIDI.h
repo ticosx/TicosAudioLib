@@ -35,7 +35,7 @@ class AudioGeneratorMIDI : public AudioGenerator
   public:
     AudioGeneratorMIDI() { freq=44100; running = false; };
     virtual ~AudioGeneratorMIDI() override {};
-    bool SetSoundfont(AudioFileSource *newsf2) {
+    bool SetSoundfont(AudioSource *newsf2) {
       if (isRunning()) return false;
       sf2 = newsf2;
       MakeStreamFromAFS(sf2, &afsSF2);
@@ -46,7 +46,7 @@ class AudioGeneratorMIDI : public AudioGenerator
       freq = newfreq;
       return true;
     }
-    virtual bool begin(AudioFileSource *mid, AudioOutput *output) override;
+    virtual bool begin(AudioSource *mid, AudioOutput *output) override;
     virtual bool loop() override;
     virtual bool stop() override;
     virtual bool isRunning() override { return running; };
@@ -57,8 +57,8 @@ class AudioGeneratorMIDI : public AudioGenerator
     struct tsf_stream buffer;
     struct tsf_stream afsMIDI;
     struct tsf_stream afsSF2;
-    AudioFileSource *sf2;
-    AudioFileSource *midi;
+    AudioSource *sf2;
+    AudioSource *midi;
 
   protected:
     struct midi_header {
@@ -160,18 +160,18 @@ class AudioGeneratorMIDI : public AudioGenerator
 
     unsigned long get_varlen (int *ptr);
     void find_note (int tracknum);
-    void PrepareMIDI(AudioFileSource *src);
+    void PrepareMIDI(AudioSource *src);
     int PlayMIDI();
     void StopMIDI();
 
-    // tsf_stream <-> AudioFileSource
+    // tsf_stream <-> AudioSource
     static int afs_read(void *data, void *ptr, unsigned int size);
     static int afs_tell(void *data);
     static int afs_skip(void *data, unsigned int count);
     static int afs_seek(void *data, unsigned int pos);
     static int afs_close(void *data);
     static int afs_size(void *data);
-    void MakeStreamFromAFS(AudioFileSource *src, tsf_stream *afs);
+    void MakeStreamFromAFS(AudioSource *src, tsf_stream *afs);
 
     int samplesToPlay;
     bool sawEOF;

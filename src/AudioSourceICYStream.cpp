@@ -1,5 +1,5 @@
 /*
-  AudioFileSourceICYStream
+  AudioSourceICYStream
   Streaming Shoutcast ICY source
   
   Copyright (C) 2017  Earle F. Philhower, III
@@ -22,24 +22,24 @@
 
 #define _GNU_SOURCE
 
-#include "AudioFileSourceICYStream.h"
+#include "AudioSourceICYStream.h"
 #include <string.h>
 
-AudioFileSourceICYStream::AudioFileSourceICYStream()
+AudioSourceICYStream::AudioSourceICYStream()
 {
   pos = 0;
   reconnectTries = 0;
   saveURL[0] = 0;
 }
 
-AudioFileSourceICYStream::AudioFileSourceICYStream(const char *url)
+AudioSourceICYStream::AudioSourceICYStream(const char *url)
 {
   saveURL[0] = 0;
   reconnectTries = 0;
   open(url);
 }
 
-bool AudioFileSourceICYStream::open(const char *url)
+bool AudioSourceICYStream::open(const char *url)
 {
   static const char *hdr[] = { "icy-metaint", "icy-name", "icy-genre", "icy-br" };
   pos = 0;
@@ -80,12 +80,12 @@ bool AudioFileSourceICYStream::open(const char *url)
   return true;
 }
 
-AudioFileSourceICYStream::~AudioFileSourceICYStream()
+AudioSourceICYStream::~AudioSourceICYStream()
 {
   http.end();
 }
 
-uint32_t AudioFileSourceICYStream::readInternal(void *data, uint32_t len, bool nonBlock)
+uint32_t AudioSourceICYStream::readInternal(void *data, uint32_t len, bool nonBlock)
 {
   // Ensure we can't possibly read 2 ICY headers in a single go #355
   if (icyMetaInt > 1) {

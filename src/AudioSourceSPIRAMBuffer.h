@@ -1,8 +1,9 @@
 /*
-  AudioFileSourceBuffer
-  Double-buffered input file using system RAM
-  
-  Copyright (C) 2017  Earle F. Philhower, III
+  AudioSourceSPIRAMBuffer
+  Buffered file source in external SPI RAM
+
+  Copyright (C) 2017  Sebastien Decourriere
+  Based on AudioSourceBuffer class from Earle F. Philhower, III
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -18,19 +19,25 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef _AUDIOFILESOURCEBUFFER_H
-#define _AUDIOFILESOURCEBUFFER_H
+#if defined(ESP32) || defined(ESP8266)
+#pragma once
 
-#include "AudioFileSource.h"
+#include "AudioSource.h"
+#include <SPI.h>
+#include "spiram-fast.h"
+//#define FAKERAM
+// #define SPIBUF_DEBUG
 
-
-class AudioFileSourceBuffer : public AudioFileSource
+class AudioSourceSPIRAMBuffer : public AudioSource
 {
   public:
-    AudioFileSourceBuffer(AudioFileSource *in, uint32_t bufferBytes);
-    AudioFileSourceBuffer(AudioFileSource *in, void *buffer, uint32_t bufferBytes); // Pre-allocated buffer by app
-    virtual ~AudioFileSourceBuffer() override;
-    
+#ifdef FAKERAM
+    AudioSourceSPIRAMBuffer(AudioSource *in, uint8_t csPin = 15, uint32_t bufferBytes = 2048);
+#else
+    AudioSourceSPIRAMBuffer(AudioSource *in, uint8_t csPin = 15, uint32_t bufferBytes = 128*1024);
+#endif
+    virtual ~AudioSourceSPIRAMBuffer() override;
+
     virtual uint32_t read(void *data, uint32_t len) override;
     virtual bool seek(int32_t pos, int dir) override;
     virtual bool close() override;
@@ -39,24 +46,20 @@ class AudioFileSourceBuffer : public AudioFileSource
     virtual uint32_t getPos() override;
     virtual bool loop() override;
 
-    virtual uint32_t getFillLevel();
-
-    enum { STATUS_FILLING=2, STATUS_UNDERFLOW };
-
   private:
     virtual void fill();
 
   private:
-    AudioFileSource *src;
-    uint32_t buffSize;
-    uint8_t *buffer;
-    bool deallocateBuffer;
-    uint32_t writePtr;
-    uint32_t readPtr;
-    uint32_t length;
+    AudioSource *src;
+    ESP8266SPIRAM ram;
+    size_t ramSize;
+    size_t writePtr;
+    size_t readPtr;
     bool filled;
+
+#ifdef FAKERAM
+    char fakeRAM[2048];
+#endif
 };
 
-
 #endif
-

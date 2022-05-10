@@ -265,7 +265,7 @@ bool AudioGeneratorRTTTL::GetNextNote()
   return true;
 }
 
-bool AudioGeneratorRTTTL::begin(AudioFileSource *source, AudioOutput *output)
+bool AudioGeneratorRTTTL::begin(AudioSource *source, AudioOutput *output)
 {
   if (!source) return false;
   file = source;

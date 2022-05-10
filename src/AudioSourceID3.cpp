@@ -1,5 +1,5 @@
 /*
-  AudioFileSourceID3
+  AudioSourceID3
   ID3 filter that extracts any ID3 fields and sends to CB function
   
   Copyright (C) 2017  Earle F. Philhower, III
@@ -18,27 +18,27 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "AudioFileSourceID3.h"
+#include "AudioSourceID3.h"
 
 // Handle unsync operation in ID3 with custom class
-class AudioFileSourceUnsync : public AudioFileSource
+class AudioSourceUnsync : public AudioSource
 {
   public:
-    AudioFileSourceUnsync(AudioFileSource *src, int len, bool unsync);
-    virtual ~AudioFileSourceUnsync() override;
+    AudioSourceUnsync(AudioSource *src, int len, bool unsync);
+    virtual ~AudioSourceUnsync() override;
     virtual uint32_t read(void *data, uint32_t len) override;
 
     int getByte();
     bool eof();
 
   private:
-    AudioFileSource *src;
+    AudioSource *src;
     int remaining;
     bool unsync;
     int savedByte;
 };
 
-AudioFileSourceUnsync::AudioFileSourceUnsync(AudioFileSource *src, int len, bool unsync)
+AudioSourceUnsync::AudioSourceUnsync(AudioSource *src, int len, bool unsync)
 {
   this->src = src;
   this->remaining = len;
@@ -46,11 +46,11 @@ AudioFileSourceUnsync::AudioFileSourceUnsync(AudioFileSource *src, int len, bool
   this->savedByte = -1;
 }
 
-AudioFileSourceUnsync::~AudioFileSourceUnsync()
+AudioSourceUnsync::~AudioSourceUnsync()
 {
 }
 
-uint32_t AudioFileSourceUnsync::read(void *data, uint32_t len)
+uint32_t AudioSourceUnsync::read(void *data, uint32_t len)
 {
   uint32_t bytes = 0;
   uint8_t *ptr = reinterpret_cast<uint8_t*>(data);
@@ -66,7 +66,7 @@ uint32_t AudioFileSourceUnsync::read(void *data, uint32_t len)
   return bytes;
 }
 
-int AudioFileSourceUnsync::getByte()
+int AudioSourceUnsync::getByte()
 {
   // If we're not unsync, just read.
   if (!unsync) {
@@ -109,7 +109,7 @@ int AudioFileSourceUnsync::getByte()
   }
 }
 
-bool AudioFileSourceUnsync::eof()
+bool AudioSourceUnsync::eof()
 {
   if (remaining<=0) return true;
   else return false;
@@ -117,17 +117,17 @@ bool AudioFileSourceUnsync::eof()
 
 
 
-AudioFileSourceID3::AudioFileSourceID3(AudioFileSource *src)
+AudioSourceID3::AudioSourceID3(AudioSource *src)
 {
   this->src = src;
   this->checked = false;
 }
 
-AudioFileSourceID3::~AudioFileSourceID3()
+AudioSourceID3::~AudioSourceID3()
 {
 }
 
-uint32_t AudioFileSourceID3::read(void *data, uint32_t len)
+uint32_t AudioSourceID3::read(void *data, uint32_t len)
 {
   int rev = 0;
 
@@ -171,7 +171,7 @@ uint32_t AudioFileSourceID3::read(void *data, uint32_t len)
   id3Size = id3Size << 7;
   id3Size |= buff[9];
   // Every read from now may be unsync'd
-  AudioFileSourceUnsync id3(src, id3Size, unsync);
+  AudioSourceUnsync id3(src, id3Size, unsync);
 
   if (exthdr) {
     int ehsz = (id3.getByte()<<24) | (id3.getByte()<<16) | (id3.getByte()<<8) | (id3.getByte());
@@ -254,27 +254,27 @@ uint32_t AudioFileSourceID3::read(void *data, uint32_t len)
   return src->read(data, len);
 }
 
-bool AudioFileSourceID3::seek(int32_t pos, int dir)
+bool AudioSourceID3::seek(int32_t pos, int dir)
 {
   return src->seek(pos, dir);
 }
 
-bool AudioFileSourceID3::close()
+bool AudioSourceID3::close()
 {
   return src->close();
 }
 
-bool AudioFileSourceID3::isOpen()
+bool AudioSourceID3::isOpen()
 {
   return src->isOpen();
 }
 
-uint32_t AudioFileSourceID3::getSize()
+uint32_t AudioSourceID3::getSize()
 {
   return src->getSize();
 }
 
-uint32_t AudioFileSourceID3::getPos()
+uint32_t AudioSourceID3::getPos()
 {
   return src->getPos();
 }

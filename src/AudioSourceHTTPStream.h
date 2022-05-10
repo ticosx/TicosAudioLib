@@ -1,5 +1,5 @@
 /*
-  AudioFileSourceHTTPStream
+  AudioSourceHTTPStream
   Connect to a HTTP based streaming service
   
   Copyright (C) 2017  Earle F. Philhower, III
@@ -27,16 +27,16 @@
 #else
   #include <ESP8266HTTPClient.h>
 #endif
-#include "AudioFileSource.h"
+#include "AudioSource.h"
 
-class AudioFileSourceHTTPStream : public AudioFileSource
+class AudioSourceHTTPStream : public AudioSource
 {
-  friend class AudioFileSourceICYStream;
+  friend class AudioSourceICYStream;
 
   public:
-    AudioFileSourceHTTPStream();
-    AudioFileSourceHTTPStream(const char *url);
-    virtual ~AudioFileSourceHTTPStream() override;
+    AudioSourceHTTPStream();
+    AudioSourceHTTPStream(const char *url);
+    virtual ~AudioSourceHTTPStream() override;
     
     virtual bool open(const char *url) override;
     virtual uint32_t read(void *data, uint32_t len) override;

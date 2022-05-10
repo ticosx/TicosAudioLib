@@ -336,7 +336,7 @@ note_off:
 
 
 // Open file, parse headers, get ready to process MIDI
-void AudioGeneratorMIDI::PrepareMIDI(AudioFileSource *src)
+void AudioGeneratorMIDI::PrepareMIDI(AudioSource *src)
 {
   MakeStreamFromAFS(src, &afsMIDI);
   tsf_stream_wrap_cached(&afsMIDI, 32, 64, &buffer);
@@ -503,7 +503,7 @@ void AudioGeneratorMIDI::StopMIDI()
 }
 
 
-bool AudioGeneratorMIDI::begin(AudioFileSource *src, AudioOutput *out)
+bool AudioGeneratorMIDI::begin(AudioSource *src, AudioOutput *out)
 {
   // Clear out status variables
   for (int i=0; i<MAX_TONEGENS; i++) memset(&tonegen[i], 0, sizeof(struct tonegen_status));
@@ -596,41 +596,41 @@ bool AudioGeneratorMIDI::stop()
 
 int AudioGeneratorMIDI::afs_read(void *data, void *ptr, unsigned int size)
 {
-  AudioFileSource *s = reinterpret_cast<AudioFileSource *>(data);
+  AudioSource *s = reinterpret_cast<AudioSource *>(data);
   return s->read(ptr, size);
 }
 
 int AudioGeneratorMIDI::afs_tell(void *data)
 {
-  AudioFileSource *s = reinterpret_cast<AudioFileSource *>(data);
+  AudioSource *s = reinterpret_cast<AudioSource *>(data);
   return s->getPos();
 }
 
 int AudioGeneratorMIDI::afs_skip(void *data, unsigned int count)
 {
-  AudioFileSource *s = reinterpret_cast<AudioFileSource *>(data);
+  AudioSource *s = reinterpret_cast<AudioSource *>(data);
   return s->seek(count, SEEK_CUR);
 }
 
 int AudioGeneratorMIDI::afs_seek(void *data, unsigned int pos)
 {
-  AudioFileSource *s = reinterpret_cast<AudioFileSource *>(data);
+  AudioSource *s = reinterpret_cast<AudioSource *>(data);
   return s->seek(pos, SEEK_SET);
 }
 
 int AudioGeneratorMIDI::afs_close(void *data)
 {
-  AudioFileSource *s = reinterpret_cast<AudioFileSource *>(data);
+  AudioSource *s = reinterpret_cast<AudioSource *>(data);
   return s->close();
 }
 
 int AudioGeneratorMIDI::afs_size(void *data)
 {
-  AudioFileSource *s = reinterpret_cast<AudioFileSource *>(data);
+  AudioSource *s = reinterpret_cast<AudioSource *>(data);
   return s->getSize();
 }
 
-void AudioGeneratorMIDI::MakeStreamFromAFS(AudioFileSource *src, tsf_stream *afs)
+void AudioGeneratorMIDI::MakeStreamFromAFS(AudioSource *src, tsf_stream *afs)
 {
   afs->data = reinterpret_cast<void*>(src);
   afs->read = &afs_read;

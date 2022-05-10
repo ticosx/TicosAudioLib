@@ -66,19 +66,19 @@ After creation, you need to call the AudioGeneratorXXX::loop() routine from insi
 See the examples directory for some simple examples, but the following snippet can play an MP3 file over the simulated I2S DAC:
 ```cpp
 #include <Arduino.h>
-#include "AudioFileSourceSPIFFS.h"
+#include "AudioSourceSPIFFS.h"
 #include "AudioGeneratorMP3.h"
 #include "AudioOutputI2SNoDAC.h"
 
 AudioGeneratorMP3 *mp3;
-AudioFileSourceSPIFFS *file;
+AudioSourceSPIFFS *file;
 AudioOutputI2SNoDAC *out;
 void setup()
 {
   Serial.begin(115200);
   delay(1000);
   SPIFFS.begin();
-  file = new AudioFileSourceSPIFFS("/jamonit.mp3");
+  file = new AudioSourceSPIFFS("/jamonit.mp3");
   out = new AudioOutputI2SNoDAC();
   mp3 = new AudioGeneratorMP3();
   mp3->begin(file, out);
@@ -95,30 +95,30 @@ void loop()
 }
 ```
 
-## AudioFileSource classes
-AudioFileSource:  Base class which implements a very simple read-only "file" interface.  Required because it seems everyone has invented their own filesystem on the Arduino with their own unique twist.  Using this wrapper lets that be abstracted and makes the AudioGenerator simpler as it only calls these simple functions.
+## AudioSource classes
+AudioSource:  Base class which implements a very simple read-only "file" interface.  Required because it seems everyone has invented their own filesystem on the Arduino with their own unique twist.  Using this wrapper lets that be abstracted and makes the AudioGenerator simpler as it only calls these simple functions.
 
-AudioFileSourceSPIFFS:  Reads a file from the SPIFFS filesystem
+AudioSourceSPIFFS:  Reads a file from the SPIFFS filesystem
 
-AudioFileSourcePROGMEM:  Reads a file from a PROGMEM array.  Under UNIX you can use "xxd -i file.mp3 > file.h" to get the basic format, then add "const" and "PROGMEM" to the generated array and include it in your sketch.  See the example .h files for a concrete example.
+AudioSourcePROGMEM:  Reads a file from a PROGMEM array.  Under UNIX you can use "xxd -i file.mp3 > file.h" to get the basic format, then add "const" and "PROGMEM" to the generated array and include it in your sketch.  See the example .h files for a concrete example.
 
-AudioFileSourceHTTPStream:  Simple implementation of a streaming HTTP reader for ShoutCast-type MP3 streaming.  Not yet resilient, and at 44.1khz 128bit stutters due to CPU limitations, but it works more or less.
+AudioSourceHTTPStream:  Simple implementation of a streaming HTTP reader for ShoutCast-type MP3 streaming.  Not yet resilient, and at 44.1khz 128bit stutters due to CPU limitations, but it works more or less.
 
-## AudioFileSourceBuffer - Double buffering, useful for HTTP streams
-AudioFileSourceBuffer is an input source that simply adds an additional RAM buffer of the output of any other AudioFileSource.  This is particularly useful for web streaming where you need to have 1-2 packets in memory to ensure hiccup-free playback.
+## AudioSourceBuffer - Double buffering, useful for HTTP streams
+AudioSourceBuffer is an input source that simply adds an additional RAM buffer of the output of any other AudioSource.  This is particularly useful for web streaming where you need to have 1-2 packets in memory to ensure hiccup-free playback.
 
 Create your standard input file source, create the buffer with the original source as its input, and pass this buffer object to the generator.
 ```cpp
 ...
 AudioGeneratorMP3 *mp3;
-AudioFileSourceHTTPStream *file;
-AudioFileSourceBuffer *buff;
+AudioSourceHTTPStream *file;
+AudioSourceBuffer *buff;
 AudioOutputI2SNoDAC *out;
 ...
   // Create the HTTP stream normally
-  file = new AudioFileSourceHTTPStream("http://your.url.here/mp3");
+  file = new AudioSourceHTTPStream("http://your.url.here/mp3");
   // Create a buffer using that stream
-  buff = new AudioFileSourceBuffer(file, 2048);
+  buff = new AudioSourceBuffer(file, 2048);
   out = new AudioOutputI2SNoDAC();
   mp3 = new AudioGeneratorMP3();
   // Pass in the *buffer*, not the *http stream* to enable buffering
@@ -127,11 +127,11 @@ AudioOutputI2SNoDAC *out;
 
 ```
 
-## AudioFileSourceID3 - ID3 stream parser filter with a user-specified callback
-This class, which takes as input any other AudioFileSource and outputs an AudioFileSource suitable for any decoder, automatically parses out ID3 tags from MP3 files.  You need to specify a callback function, which will be called as tags are decoded and allow you to update your UI state with this information.  See the PlayMP3FromSPIFFS example for more information.
+## AudioSourceID3 - ID3 stream parser filter with a user-specified callback
+This class, which takes as input any other AudioSource and outputs an AudioSource suitable for any decoder, automatically parses out ID3 tags from MP3 files.  You need to specify a callback function, which will be called as tags are decoded and allow you to update your UI state with this information.  See the PlayMP3FromSPIFFS example for more information.
 
 ## AudioGenerator classes
-AudioGenerator:  Base class for all file decoders.  Takes a AudioFileSource and an AudioOutput object to get the data from and to write decoded samples to.  Call its loop() function as often as you can to ensure the buffers are always kept full and your music won't skip.
+AudioGenerator:  Base class for all file decoders.  Takes a AudioSource and an AudioOutput object to get the data from and to write decoded samples to.  Call its loop() function as often as you can to ensure the buffers are always kept full and your music won't skip.
 
 AudioGeneratorWAV:  Reads and plays Microsoft WAVE (.WAV) format files of 8 or 16 bits.
 

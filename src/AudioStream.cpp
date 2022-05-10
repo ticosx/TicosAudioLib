@@ -1,8 +1,8 @@
 #include <Arduino.h>
-#include "AudioFileStream.h"
+#include "AudioStream.h"
 
 
-AudioFileStream::AudioFileStream(AudioFileSource *source, int definedLen)
+AudioStream::AudioStream(AudioSource *source, int definedLen)
 {
   src = source;
   len = definedLen;
@@ -10,7 +10,7 @@ AudioFileStream::AudioFileStream(AudioFileSource *source, int definedLen)
   saved = -1;
 }
 
-AudioFileStream::~AudioFileStream()
+AudioStream::~AudioStream()
 {
   // If there's a defined len, read until we're empty
   if (len) {
@@ -19,7 +19,7 @@ AudioFileStream::~AudioFileStream()
 }
 
 
-int AudioFileStream::available()
+int AudioStream::available()
 {
   if (saved >= 0) return 1;
   else if (len) return ptr - len;
@@ -27,7 +27,7 @@ int AudioFileStream::available()
   else return 1;
 }
 
-int AudioFileStream::read()
+int AudioStream::read()
 {
   uint8_t c;
   int r;
@@ -44,7 +44,7 @@ int AudioFileStream::read()
   return (int)c;
 }
 
-int AudioFileStream::peek()
+int AudioStream::peek()
 {
   uint8_t c;
   if ((ptr+1) >= len) return -1;
@@ -55,7 +55,7 @@ int AudioFileStream::peek()
   return saved;
 }
 
-void AudioFileStream::flush()
+void AudioStream::flush()
 {
   /* noop? */
 }

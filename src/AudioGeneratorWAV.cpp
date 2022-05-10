@@ -272,7 +272,7 @@ bool AudioGeneratorWAV::ReadWAVInfo()
   return true;
 }
 
-bool AudioGeneratorWAV::begin(AudioFileSource *source, AudioOutput *output)
+bool AudioGeneratorWAV::begin(AudioSource *source, AudioOutput *output)
 {
   if (!source) {
     Serial.printf_P(PSTR("AudioGeneratorWAV::begin: failed: invalid source\n"));
