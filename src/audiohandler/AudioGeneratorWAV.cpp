@@ -25,7 +25,7 @@
 AudioGeneratorWAV::AudioGeneratorWAV()
 {
   running = false;
-  file = NULL;
+  this->source = NULL;
   output = NULL;
   buffSize = 128;
   buff = NULL;
@@ -45,7 +45,7 @@ bool AudioGeneratorWAV::stop()
   free(buff);
   buff = NULL;
   output->stop();
-  return file->close();
+  return source->close();
 }
 
 bool AudioGeneratorWAV::isRunning()
@@ -64,7 +64,7 @@ bool AudioGeneratorWAV::GetBufferedData(int bytes, void *dest)
     if (buffPtr >= buffLen) {
       buffPtr = 0;
       uint32_t toRead = availBytes > buffSize ? buffSize : availBytes;
-      buffLen = file->read( buff, toRead );
+      buffLen = source->read( buff, toRead );
       availBytes -= buffLen;
     }
     if (buffPtr >= buffLen)
@@ -106,7 +106,7 @@ bool AudioGeneratorWAV::loop()
   } while (running && output->consumeSample(lastSample));
 
 done:
-  file->loop();
+  source->loop();
   output->loop();
 
   return running;
@@ -243,12 +243,12 @@ bool AudioGeneratorWAV::ReadWAVInfo()
       Serial.printf_P(PSTR("AudioGeneratorWAV::ReadWAVInfo: failed to read WAV data\n"));
       return false;
     };
-    if(!file->seek(u32, SEEK_CUR)) {
+    if(!source->seek(u32, SEEK_CUR)) {
       Serial.printf_P(PSTR("AudioGeneratorWAV::ReadWAVInfo: failed to read WAV data, seek failed\n"));
       return false;
     }
   } while (1);
-  if (!file->isOpen()) {
+  if (!source->isOpen()) {
     Serial.printf_P(PSTR("AudioGeneratorWAV::ReadWAVInfo: cannot read WAV, file is not open\n"));
     return false;
   };
@@ -278,13 +278,13 @@ bool AudioGeneratorWAV::begin(AudioSource *source, AudioOutput *output)
     Serial.printf_P(PSTR("AudioGeneratorWAV::begin: failed: invalid source\n"));
     return false;
   }
-  file = source;
+  this->source = source;
   if (!output) {
     Serial.printf_P(PSTR("AudioGeneratorWAV::begin: invalid output\n"));
     return false;
   }
   this->output = output;
-  if (!file->isOpen()) {
+  if (!source->isOpen()) {
     Serial.printf_P(PSTR("AudioGeneratorWAV::begin: file not open\n"));
     return false;
   } // Error

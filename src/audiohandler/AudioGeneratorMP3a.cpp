@@ -26,7 +26,7 @@
 AudioGeneratorMP3a::AudioGeneratorMP3a()
 {
   running = false;
-  file = NULL;
+  this->source = NULL;
   output = NULL;
   hMP3Decoder = MP3InitDecoder();
   if (!hMP3Decoder) {
@@ -54,7 +54,7 @@ bool AudioGeneratorMP3a::stop()
   if (!running) return true;
   running = false;
   output->stop();
-  return file->close();
+  return source->close();
 }
 
 bool AudioGeneratorMP3a::isRunning()
@@ -73,10 +73,10 @@ bool AudioGeneratorMP3a::FillBufferWithValidFrame()
     if (nextSync == -1) {
       if (buff[buffValid-1]==0xff) { // Could be 1st half of syncword, preserve it...
         buff[0] = 0xff;
-        buffValid = file->read(buff+1, sizeof(buff)-1);
+        buffValid = source->read(buff+1, sizeof(buff)-1);
         if (buffValid==0) return false; // No data available, EOF
       } else { // Try a whole new buffer
-        buffValid = file->read(buff, sizeof(buff));
+        buffValid = source->read(buff, sizeof(buff));
         if (buffValid==0) return false; // No data available, EOF
       }
     }
@@ -87,7 +87,7 @@ bool AudioGeneratorMP3a::FillBufferWithValidFrame()
   memmove(buff, buff+nextSync, buffValid);
 
   // We have a sync word at 0 now, try and fill remainder of buffer
-  buffValid += file->read(buff + buffValid, sizeof(buff) - buffValid);
+  buffValid += source->read(buff + buffValid, sizeof(buff) - buffValid);
 
   return true;
 }
@@ -136,7 +136,7 @@ bool AudioGeneratorMP3a::loop()
   }
 
 done:
-  file->loop();
+  source->loop();
   output->loop();
 
   return running;
@@ -145,10 +145,10 @@ done:
 bool AudioGeneratorMP3a::begin(AudioSource *source, AudioOutput *output)
 {
   if (!source) return false;
-  file = source;
+  this->source = source;
   if (!output) return false;
   this->output = output;
-  if (!file->isOpen()) return false; // Error
+  if (!source->isOpen()) return false; // Error
 
   output->begin();
   

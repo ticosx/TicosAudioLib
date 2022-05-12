@@ -50,7 +50,7 @@ AudioGeneratorMOD::AudioGeneratorMOD()
   usePAL = false;
   UpdateAmiga();
   running = false;
-  file = NULL;
+  this->source = NULL;
   output = NULL;
 }
 
@@ -70,11 +70,11 @@ bool AudioGeneratorMOD::stop()
     FatBuffer.channels[i] = NULL;
   }
 
-  if(running || ((file != NULL) && (file->isOpen() == true))) {
+  if(running || ((source != NULL) && (source->isOpen() == true))) {
 	output->flush();  //flush I2S output buffer, if the player was actually running before.
   }
 
-  if (file) file->close();
+  if (source) source->close();
   running = false;
   output->stop();
   return true;
@@ -102,7 +102,7 @@ bool AudioGeneratorMOD::loop()
   } while (output->consumeSample(lastSample));
 
 done:
-  file->loop();
+  source->loop();
   output->loop();
 
   // We'll be left with one sample still in our buffer because it couldn't fit in the FIFO
@@ -114,11 +114,11 @@ bool AudioGeneratorMOD::begin(AudioSource *source, AudioOutput *out)
   if (running) stop();
   
   if (!source) return false;
-  file = source;
+  this->source = source;
   if (!out) return false;
   output = out;
   
-  if (!file->isOpen()) return false; // Can't read the file!
+  if (!source->isOpen()) return false; // Can't read the file!
 
   // Set the output values properly
   if (!output->setRate(sampleRate)) return false;
@@ -202,35 +202,35 @@ bool AudioGeneratorMOD::LoadHeader()
   uint8_t temp[4];
   uint8_t junk[22];
 
-  if (20 != file->read(/*Mod.name*/junk, 20)) return false; // Skip MOD name
+  if (20 != source->read(/*Mod.name*/junk, 20)) return false; // Skip MOD name
   for (i = 0; i < SAMPLES; i++) {
-    if (22 != file->read(junk /*Mod.samples[i].name*/, 22)) return false; // Skip sample name
-    if (2 != file->read(temp, 2)) return false;
+    if (22 != source->read(junk /*Mod.samples[i].name*/, 22)) return false; // Skip sample name
+    if (2 != source->read(temp, 2)) return false;
     Mod.samples[i].length = MakeWord(temp[0], temp[1]) * 2;
-    if (1 != file->read(reinterpret_cast<uint8_t*>(&Mod.samples[i].fineTune), 1)) return false;
+    if (1 != source->read(reinterpret_cast<uint8_t*>(&Mod.samples[i].fineTune), 1)) return false;
     if (Mod.samples[i].fineTune > 7) Mod.samples[i].fineTune -= 16;
-    if (1 != file->read(&Mod.samples[i].volume, 1)) return false;
-    if (2 != file->read(temp, 2)) return false;
+    if (1 != source->read(&Mod.samples[i].volume, 1)) return false;
+    if (2 != source->read(temp, 2)) return false;
     Mod.samples[i].loopBegin = MakeWord(temp[0], temp[1]) * 2;
-    if (2 != file->read(temp, 2)) return false;
+    if (2 != source->read(temp, 2)) return false;
     Mod.samples[i].loopLength = MakeWord(temp[0], temp[1]) * 2;
     if (Mod.samples[i].loopBegin + Mod.samples[i].loopLength > Mod.samples[i].length)
       Mod.samples[i].loopLength = Mod.samples[i].length - Mod.samples[i].loopBegin;
   }
 
-  if (1 != file->read(&Mod.songLength, 1)) return false;
-  if (1 != file->read(temp, 1)) return false; // Discard this byte
+  if (1 != source->read(&Mod.songLength, 1)) return false;
+  if (1 != source->read(temp, 1)) return false; // Discard this byte
 
   Mod.numberOfPatterns = 0;
   for (i = 0; i < 128; i++) {
-    if (1 != file->read(&Mod.order[i], 1)) return false;
+    if (1 != source->read(&Mod.order[i], 1)) return false;
     if (Mod.order[i] > Mod.numberOfPatterns)
       Mod.numberOfPatterns = Mod.order[i];
   }
   Mod.numberOfPatterns++;
 
   // Offset 1080
-  if (4 != file->read(temp, 4)) return false;;
+  if (4 != source->read(temp, 4)) return false;;
   if (!strncmp(reinterpret_cast<const char*>(temp + 1), "CHN", 3))
     Mod.numberOfChannels = temp[0] - '0';
   else if (!strncmp(reinterpret_cast<const char*>(temp + 2), "CH", 2))
@@ -280,12 +280,12 @@ bool AudioGeneratorMOD::LoadPattern(uint8_t pattern)
   uint8_t temp[4];
   uint16_t amigaPeriod;
 
-  if (!file->seek(1084 + pattern * ROWS * Mod.numberOfChannels * 4, SEEK_SET)) return false;
+  if (!source->seek(1084 + pattern * ROWS * Mod.numberOfChannels * 4, SEEK_SET)) return false;
 
   for (row = 0; row < ROWS; row++) {
     for (channel = 0; channel < Mod.numberOfChannels; channel++) {
 
-      if (4 != file->read(temp, 4)) return false;
+      if (4 != source->read(temp, 4)) return false;
 
       Player.currentPattern.sampleNumber[row][channel] = (temp[0] & 0xF0) + (temp[2] >> 4);
 
@@ -793,11 +793,11 @@ void AudioGeneratorMOD::GetSample(int16_t sample[2])
       uint32_t toRead = Mixer.sampleEnd[Mixer.channelSampleNumber[channel]] - samplePointer + 1;
       if (toRead > fatBufferSize) toRead  = fatBufferSize;
 
-      if (!file->seek(samplePointer, SEEK_SET)) {
+      if (!source->seek(samplePointer, SEEK_SET)) {
         stop();
         return;
       }
-      if (toRead != file->read(FatBuffer.channels[channel], toRead)) {
+      if (toRead != source->read(FatBuffer.channels[channel], toRead)) {
         stop();
         return;
       }

@@ -43,7 +43,7 @@ class AudioGenerator
 
   protected:
     bool running;
-    AudioSource *file;
+    AudioSource *source;
     AudioOutput *output;
     int16_t lastSample[2];
 

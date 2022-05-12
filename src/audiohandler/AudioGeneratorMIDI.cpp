@@ -520,7 +520,7 @@ bool AudioGeneratorMIDI::begin(AudioSource *src, AudioOutput *out)
   if (!out->begin()) return false;
 
   output = out;
-  file = src;
+  this->source = src;
 
   running = true;
 
@@ -580,7 +580,7 @@ play:
   } while (running && output->consumeSample(lastSample));
 
 done:
-  file->loop();
+  source->loop();
   output->loop();
 
   return running;

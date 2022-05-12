@@ -1,6 +1,6 @@
 /*
-  AudioOutputSPIFFSWAV
-  Writes a WAV file to the SPIFFS filesystem
+  AudioOutputFSWAV
+  Writes a WAV file to the filesystem
   
   Copyright (C) 2017  Earle F. Philhower, III
 
@@ -24,24 +24,20 @@
 #include <Arduino.h>
 #include <FS.h>
 
-#include "AudioOutput.h"
+#include "AudioOutputFS.h"
 
-class AudioOutputFSWAV : public AudioOutput
+class AudioOutputFSWAV : public AudioOutputFS
 {
   public:
     AudioOutputFSWAV() { filename = NULL; };
-    ~AudioOutputFSWAV() { free(filename); };
+    ~AudioOutputFSWAV() {};
     virtual bool begin() override;
     virtual bool consumeSample(int16_t sample[2]) override;
-    // virtual uint16_t consumeSamples(int16_t *samples, uint16_t count) override;
     virtual bool stop() override;
     virtual void flush() override;
-    void setFilename(FS& fs, const char *name);
+    virtual void setFilename(FS& fs, const char *name);
 
   private:
-    FS *filesystem;
-    File f;
-    char *filename;
     uint8_t *buff = NULL;
     uint32_t buffLen = 512;
     uint32_t dataLen = 0;

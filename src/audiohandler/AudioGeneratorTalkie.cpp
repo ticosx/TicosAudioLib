@@ -28,7 +28,7 @@ AudioGeneratorTalkie::AudioGeneratorTalkie()
 {
   running = false;
   lastFrame = false;
-  file = nullptr;
+  this->source = nullptr;
   output = nullptr;
   buff = nullptr;
 }
@@ -72,12 +72,12 @@ bool AudioGeneratorTalkie::begin(AudioSource *source, AudioOutput *output)
   if (!output) return false;
   this->output = output;
   if (source) {
-    file = source;
-    if (!file->isOpen()) return false; // Error
-    auto len = file->getSize();
+    this->source = source;
+    if (!source->isOpen()) return false; // Error
+    auto len = source->getSize();
     uint8_t *temp = (uint8_t *)malloc(len);
     if (!temp) return false;
-    if (file->read(temp, len) != (uint32_t)len) return false;
+    if (source->read(temp, len) != (uint32_t)len) return false;
     say(temp, len);
     free(temp);
   } else {
@@ -104,7 +104,7 @@ bool AudioGeneratorTalkie::stop()
   if (!running) return true;
   running = false;
   output->stop();
-  return file ? file->close() : true;
+  return source ? source->close() : true;
 }
 
 bool AudioGeneratorTalkie::isRunning()
@@ -133,7 +133,7 @@ bool AudioGeneratorTalkie::loop()
   }
   
 done:
-  if (file) file->loop();
+  if (source) source->loop();
   output->loop();
 
   return running;

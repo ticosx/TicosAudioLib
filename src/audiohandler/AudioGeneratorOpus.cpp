@@ -18,7 +18,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <AudioGeneratorOpus.h>
+#include "AudioGeneratorOpus.h"
 
 AudioGeneratorOpus::AudioGeneratorOpus()
 {
@@ -45,10 +45,10 @@ bool AudioGeneratorOpus::begin(AudioSource *source, AudioOutput *output)
   if (!buff) return false;
 
   if (!source) return false;
-  file = source;
+  this->source = source;
   if (!output) return false;
   this->output = output;
-  if (!file->isOpen()) return false; // Error
+  if (!source->isOpen()) return false; // Error
 
   of = op_open_callbacks((void*)this, &cb, nullptr, 0, nullptr);
   if (!of) return false;
@@ -98,7 +98,7 @@ bool AudioGeneratorOpus::loop()
   } while (running && output->consumeSample(lastSample));
 
 done:
-  file->loop();
+  source->loop();
   output->loop();
 
   return running;
@@ -122,18 +122,18 @@ bool AudioGeneratorOpus::isRunning()
 
 int AudioGeneratorOpus::read_cb(unsigned char *_ptr, int _nbytes) {
   if (_nbytes == 0) return 0;
-  _nbytes = file->read(_ptr, _nbytes);
+  _nbytes = source->read(_ptr, _nbytes);
   if (_nbytes == 0) return -1;
   return _nbytes;
 }
 
 int AudioGeneratorOpus::seek_cb(opus_int64 _offset, int _whence) {
-  if (!file->seek((int32_t)_offset, _whence)) return -1;
+  if (!source->seek((int32_t)_offset, _whence)) return -1;
   return 0;
 }
 
 opus_int64 AudioGeneratorOpus::tell_cb() {
-  return file->getPos();
+  return source->getPos();
 }
 
 int AudioGeneratorOpus::close_cb() {

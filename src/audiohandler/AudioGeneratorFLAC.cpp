@@ -18,7 +18,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <AudioGeneratorFLAC.h>
+#include "AudioGeneratorFLAC.h"
 
 AudioGeneratorFLAC::AudioGeneratorFLAC()
 {
@@ -43,10 +43,10 @@ AudioGeneratorFLAC::~AudioGeneratorFLAC()
 bool AudioGeneratorFLAC::begin(AudioSource *source, AudioOutput *output)
 {
   if (!source) return false;
-  file = source;
+  this->source = source;
   if (!output) return false;
   this->output = output;
-  if (!file->isOpen()) return false; // Error
+  if (!source->isOpen()) return false; // Error
 
   flac = FLAC__stream_decoder_new();
   if (!flac) return false;
@@ -115,7 +115,7 @@ bool AudioGeneratorFLAC::loop()
   } while (running && output->consumeSample(lastSample));
 
 done:
-  file->loop();
+  source->loop();
   output->loop();
 
   return running;
@@ -142,33 +142,33 @@ FLAC__StreamDecoderReadStatus AudioGeneratorFLAC::read_cb(const FLAC__StreamDeco
 {
   (void) decoder;
   if (*bytes==0) return FLAC__STREAM_DECODER_READ_STATUS_ABORT;
-  *bytes = file->read(buffer, sizeof(FLAC__byte) * (*bytes));
+  *bytes = source->read(buffer, sizeof(FLAC__byte) * (*bytes));
   if (*bytes==0) return FLAC__STREAM_DECODER_READ_STATUS_END_OF_STREAM;
   return FLAC__STREAM_DECODER_READ_STATUS_CONTINUE;
 }
 FLAC__StreamDecoderSeekStatus AudioGeneratorFLAC::seek_cb(const FLAC__StreamDecoder *decoder, FLAC__uint64 absolute_byte_offset)
 {
   (void) decoder;
-  if (!file->seek((int32_t)absolute_byte_offset, 0)) return FLAC__STREAM_DECODER_SEEK_STATUS_ERROR;
+  if (!source->seek((int32_t)absolute_byte_offset, 0)) return FLAC__STREAM_DECODER_SEEK_STATUS_ERROR;
   return FLAC__STREAM_DECODER_SEEK_STATUS_OK;
 }
 FLAC__StreamDecoderTellStatus AudioGeneratorFLAC::tell_cb(const FLAC__StreamDecoder *decoder, FLAC__uint64 *absolute_byte_offset)
 {
   (void) decoder;
-  *absolute_byte_offset = file->getPos();
+  *absolute_byte_offset = source->getPos();
   return FLAC__STREAM_DECODER_TELL_STATUS_OK;
 }
 
 FLAC__StreamDecoderLengthStatus AudioGeneratorFLAC::length_cb(const FLAC__StreamDecoder *decoder, FLAC__uint64 *stream_length)
 {
   (void) decoder;
-  *stream_length = file->getSize();
+  *stream_length = source->getSize();
   return FLAC__STREAM_DECODER_LENGTH_STATUS_OK;
 }
 FLAC__bool AudioGeneratorFLAC::eof_cb(const FLAC__StreamDecoder *decoder)
 {
   (void) decoder;
-  if (file->getPos() >= file->getSize()) return true;
+  if (source->getPos() >= source->getSize()) return true;
   return false;
 }
 FLAC__StreamDecoderWriteStatus AudioGeneratorFLAC::write_cb(const FLAC__StreamDecoder *decoder, const FLAC__Frame *frame, const FLAC__int32 *const buffer[])

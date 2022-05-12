@@ -27,7 +27,7 @@
 AudioGeneratorRTTTL::AudioGeneratorRTTTL()
 {
   running = false;
-  file = NULL;
+  this->source = NULL;
   output = NULL;
   rate = 22050;
   buff = nullptr;
@@ -41,13 +41,13 @@ AudioGeneratorRTTTL::~AudioGeneratorRTTTL()
 
 bool AudioGeneratorRTTTL::stop()
 {
-  if (!file || !output)
+  if (!source || !output)
   {
 	  return false;
   }
   running = false;
   output->stop();
-  return file->close();
+  return source->close();
 }
 
 bool AudioGeneratorRTTTL::isRunning()
@@ -86,7 +86,7 @@ bool AudioGeneratorRTTTL::loop()
   }
 
 done:
-  file->loop();
+  source->loop();
   output->loop();
 
   return running;
@@ -268,15 +268,15 @@ bool AudioGeneratorRTTTL::GetNextNote()
 bool AudioGeneratorRTTTL::begin(AudioSource *source, AudioOutput *output)
 {
   if (!source) return false;
-  file = source;
+  this->source = source;
   if (!output) return false;
   this->output = output;
-  if (!file->isOpen()) return false; // Error
+  if (!source->isOpen()) return false; // Error
   
-  len = file->getSize();
+  len = source->getSize();
   buff = (char *)malloc(len);
   if (!buff) return false;
-  if (file->read(buff, len) != (uint32_t)len) return false;
+  if (source->read(buff, len) != (uint32_t)len) return false;
 
   ptr = 0;
   samplesSent = 0;

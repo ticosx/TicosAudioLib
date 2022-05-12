@@ -21,7 +21,7 @@
 #ifndef _AUDIOGENERATOROPUS_H
 #define _AUDIOGENERATOROPUS_H
 
-#include <AudioGenerator.h>
+#include "AudioGenerator.h"
 //#include "libopus/opus.h"
 #include "opusfile/opusfile.h"
 

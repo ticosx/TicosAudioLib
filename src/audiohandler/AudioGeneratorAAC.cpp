@@ -28,7 +28,7 @@ AudioGeneratorAAC::AudioGeneratorAAC()
   preallocateSize = 0;
 
   running = false;
-  file = NULL;
+  this->source = NULL;
   output = NULL;
 
   buff = (uint8_t*)malloc(buffLen);
@@ -58,7 +58,7 @@ AudioGeneratorAAC::AudioGeneratorAAC(void *preallocateData, int preallocateSz)
   preallocateSize = preallocateSz;
 
   running = false;
-  file = NULL;
+  this->source = NULL;
   output = NULL;
 
   uint8_t *p = (uint8_t*)preallocateSpace;
@@ -100,7 +100,7 @@ bool AudioGeneratorAAC::stop()
 {
   running = false;
   output->stop();
-  return file->close();
+  return source->close();
 }
 
 bool AudioGeneratorAAC::isRunning()
@@ -119,10 +119,10 @@ bool AudioGeneratorAAC::FillBufferWithValidFrame()
     if (nextSync == -1) {
       if (buffValid && buff[buffValid-1]==0xff) { // Could be 1st half of syncword, preserve it...
         buff[0] = 0xff;
-        buffValid = file->read(buff+1, buffLen-1);
+        buffValid = source->read(buff+1, buffLen-1);
         if (buffValid==0) return false; // No data available, EOF
       } else { // Try a whole new buffer
-        buffValid = file->read(buff, buffLen-1);
+        buffValid = source->read(buff, buffLen-1);
         if (buffValid==0) return false; // No data available, EOF
       }
     }
@@ -133,7 +133,7 @@ bool AudioGeneratorAAC::FillBufferWithValidFrame()
   memmove(buff, buff+nextSync, buffValid);
 
   // We have a sync word at 0 now, try and fill remainder of buffer
-  buffValid += file->read(buff + buffValid, buffLen - buffValid);
+  buffValid += source->read(buff + buffValid, buffLen - buffValid);
 
   return true;
 }
@@ -187,7 +187,7 @@ bool AudioGeneratorAAC::loop()
   }
 
 done:
-  file->loop();
+  source->loop();
   output->loop();
 
   return running;
@@ -196,10 +196,10 @@ done:
 bool AudioGeneratorAAC::begin(AudioSource *source, AudioOutput *output)
 {
   if (!source) return false;
-  file = source;
+  this->source = source;
   if (!output) return false;
   this->output = output;
-  if (!file->isOpen()) return false; // Error
+  if (!source->isOpen()) return false; // Error
 
   
   // AAC always comes out at 16 bits

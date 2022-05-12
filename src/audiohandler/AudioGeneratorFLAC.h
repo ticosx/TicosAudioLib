@@ -21,7 +21,7 @@
 #ifndef _AUDIOGENERATORFLAC_H
 #define _AUDIOGENERATORFLAC_H
 
-#include <AudioGenerator.h>
+#include "AudioGenerator.h"
 extern "C" {
     #include "libflac/FLAC/stream_decoder.h"
 };

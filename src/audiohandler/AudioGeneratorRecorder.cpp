@@ -65,7 +65,7 @@ bool AudioGeneratorRecorder::stop()
     buff = NULL;
     outSample = NULL;
     output->stop();
-    return file->close();
+    return source->close();
   }
   return true;
 }
@@ -77,7 +77,7 @@ bool AudioGeneratorRecorder::isRunning()
 
 bool AudioGeneratorRecorder::FillBufferWithValidFrame()
 {
-  uint32_t readLen = file->readNonBlock(buff, buffLen);
+  uint32_t readLen = source->readNonBlock(buff, buffLen);
   //Input must be stero
   validSamples = readLen / (bps / 8) / 2;
   curSample = 0;
@@ -124,7 +124,7 @@ bool AudioGeneratorRecorder::loop()
   }
 
 done:
-  file->loop();
+  source->loop();
   output->loop();
 out:
 
@@ -134,11 +134,11 @@ out:
 bool AudioGeneratorRecorder::begin(AudioRecorderSource *source, AudioOutput *output)
 {
   if (!source) return false;
-  file = source;
+  this->source = source;
   if (!output) return false;
   this->output = output;
-  ((AudioRecorderSource *)file)->open(hertz, bps, channels);
-  if (!file->isOpen()) return false; // Error
+  source->open(hertz, bps, channels);
+  if (!source->isOpen()) return false; // Error
 
 #ifdef ESP32
     buff = (uint8_t*) ps_malloc(buffLen);

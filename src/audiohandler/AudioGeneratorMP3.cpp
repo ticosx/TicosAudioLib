@@ -24,7 +24,7 @@
 AudioGeneratorMP3::AudioGeneratorMP3()
 {
   running = false;
-  file = NULL;
+  this->source = NULL;
   output = NULL;
   buff = NULL;
   nsCountMax = 1152/32;
@@ -34,7 +34,7 @@ AudioGeneratorMP3::AudioGeneratorMP3()
 AudioGeneratorMP3::AudioGeneratorMP3(void *space, int size): preallocateSpace(space), preallocateSize(size)
 {
   running = false;
-  file = NULL;
+  this->source = NULL;
   output = NULL;
   buff = NULL;
   nsCountMax = 1152/32;
@@ -48,7 +48,7 @@ AudioGeneratorMP3::AudioGeneratorMP3(void *buff, int buffSize, void *stream, int
     preallocateSynthSpace(synth), preallocateSynthSize(synthSize)
 {
   running = false;
-  file = NULL;
+  this->source = NULL;
   output = NULL;
   buff = NULL;
   nsCountMax = 1152/32;
@@ -89,7 +89,7 @@ bool AudioGeneratorMP3::stop()
 
   running = false;
   output->stop();
-  return file->close();
+  return source->close();
 }
 
 bool AudioGeneratorMP3::isRunning()
@@ -133,9 +133,9 @@ enum mad_flow AudioGeneratorMP3::Input()
     unused = 0;
   }
 
-  lastReadPos = file->getPos() - unused;
+  lastReadPos = source->getPos() - unused;
   int len = buffLen - unused;
-  len = file->read(buff + unused, len);
+  len = source->read(buff + unused, len);
   if ((len == 0)  && (unused == 0)) {
     // Can't read any from the file, and we don't have anything left.  It's done....
     return MAD_FLOW_STOP;
@@ -251,7 +251,7 @@ retry:
   } while (running && output->consumeSample(lastSample));
 
 done:
-  file->loop();
+  source->loop();
   output->loop();
 
   return running;
@@ -262,10 +262,10 @@ done:
 bool AudioGeneratorMP3::begin(AudioSource *source, AudioOutput *output)
 {
   if (!source)  return false;
-  file = source;
+  this->source = source;
   if (!output) return false;
   this->output = output;
-  if (!file->isOpen()) {
+  if (!source->isOpen()) {
     audioLogger->printf_P(PSTR("MP3 source file not open\n"));
     return false; // Error
   }
