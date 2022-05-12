@@ -49,7 +49,7 @@ bool MediaPlayer::play(const char *res)
     {
       if (!SD_MMC.begin())
       {
-        error("MediaPlayer", "SD_MMC mount failed");
+        logErr("SD_MMC mount failed");
         return false;
       }
       fs = &SD_MMC;
@@ -58,7 +58,7 @@ bool MediaPlayer::play(const char *res)
     {
       if (!SPIFFS.begin())
       {
-        error("MediaPlayer", "SPIFFS mount failed");
+        logErr("SPIFFS mount failed");
         return false;
       }
       fs = &SPIFFS;

@@ -50,7 +50,7 @@ bool AudioOutputFSWAV::begin()
 #else
   buff = (uint8_t*) malloc(buffLen);
   if(!buff){
-    error("AudioGeneratorRecorder", "Cannot allocate buffer");
+    logErr("Cannot allocate buffer");
   }
 #endif
   dataLen = 0;

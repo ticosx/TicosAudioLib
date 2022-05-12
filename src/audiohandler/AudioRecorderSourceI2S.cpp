@@ -24,20 +24,19 @@
 #include "ServiceManager.h"
 #include "AudioService.h"
 #include "Log.h"
-#define ADUIO_RECORD_SRC_MIC_TAG "AudioRecorderSourceI2S"
 
 AudioRecorderSourceI2S::AudioRecorderSourceI2S()
 {
 #ifdef ESP32
   //setAllPins(PIN_I2S_SCK, PIN_I2S_FS, PIN_I2S_SD, PIN_I2S_SD_OUT, PIN_I2S_SD_IN);
   if(!I2S.setDuplex()){
-    error(ADUIO_RECORD_SRC_MIC_TAG, "Could not set duplex");
+    logErr("Could not set duplex");
     throw std::runtime_error("Invalid service type");
   }
 #endif
   AudioService* audioService = (AudioService*)ServiceManager::getService(AUDIO_SERVICE);
   if(audioService == NULL) {
-    warn(ADUIO_RECORD_SRC_MIC_TAG, "No AudioService defined");
+    logWarn("No AudioService defined");
   } else {
     codec = audioService->getAudioAdpater();
   }
@@ -52,7 +51,7 @@ bool AudioRecorderSourceI2S::open(uint16_t hertz, uint8_t bps, uint8_t channels)
   }
 
   if (!I2S.begin(I2S_PHILIPS_MODE, hertz, bps)) {
-    error(ADUIO_RECORD_SRC_MIC_TAG, "Failed to initialize I2S!");
+    logErr("Failed to initialize I2S!");
     return false;
   }
   if(codec){

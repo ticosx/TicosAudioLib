@@ -145,7 +145,7 @@ bool AudioGeneratorRecorder::begin(AudioRecorderSource *source, AudioOutput *out
 #else
     buff = (uint8_t*) malloc(buffLen);
     if(!buff){
-      error("AudioGeneratorRecorder", "Cannot allocate buffer");
+      logErr("Cannot allocate buffer");
     }
 #endif
   outSample = (int16_t*) buff;

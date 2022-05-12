@@ -31,7 +31,7 @@ bool MediaRecorder::record(const char *res)
   {
     if (!SD_MMC.begin())
     {
-      error("MediaRecorder", "SD_MMC mount failed");
+      logErr("SD_MMC mount failed");
       return false;
     }
     fs = &SD_MMC;
@@ -40,7 +40,7 @@ bool MediaRecorder::record(const char *res)
   {
     if (!SPIFFS.begin())
     {
-      error("MediaRecorder", "SPIFFS mount failed");
+      logErr("SPIFFS mount failed");
       return false;
     }
     fs = &SPIFFS;

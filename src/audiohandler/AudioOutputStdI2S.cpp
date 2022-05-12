@@ -27,14 +27,12 @@
 #include "AudioService.h"
 #include "Log.h"
 
-#define AUDIO_OUTPUT_STD_I2S_TAG "AudioOutputStdI2S"
-
 AudioOutputStdI2S::AudioOutputStdI2S()
 {
 
   AudioService* audioService = (AudioService*)ServiceManager::getService(AUDIO_SERVICE);
   if(audioService == NULL) {
-    warn(AUDIO_OUTPUT_STD_I2S_TAG, "No AudioService defined");
+    logWarn("No AudioService defined");
   } else {
     codec = audioService->getAudioAdpater();
   }
@@ -45,7 +43,7 @@ AudioOutputStdI2S::AudioOutputStdI2S()
 #ifdef ESP32
   //setAllPins(PIN_I2S_SCK, PIN_I2S_FS, PIN_I2S_SD, PIN_I2S_SD_OUT, PIN_I2S_SD_IN);
   if(!I2S.setDuplex()){
-    error(AUDIO_OUTPUT_STD_I2S_TAG, "Could not set duplex");
+    logErr("Could not set duplex");
     throw std::runtime_error("Invalid service type");
   }
 #endif
@@ -94,7 +92,7 @@ bool AudioOutputStdI2S::setChannels(int channels)
 {
   if ( (channels < 1) || (channels > 2) ) return false;
   if (channels == 1) {
-    warn(AUDIO_OUTPUT_STD_I2S_TAG, "I2S is fixed 2 channels");
+    logWarn("I2S is fixed 2 channels");
   }
   this->channels = channels;
   return true;
@@ -118,7 +116,7 @@ bool AudioOutputStdI2S::begin()
   }
 
   if (!I2S.begin(I2S_PHILIPS_MODE, hertz, bps)) {
-    error(AUDIO_OUTPUT_STD_I2S_TAG, "Failed to initialize I2S!");
+    logErr("Failed to initialize I2S!");
     return false;
   }
   if(codec){
@@ -135,7 +133,7 @@ bool AudioOutputStdI2S::begin()
 #endif
     if(!buffer)
     {
-      error(AUDIO_OUTPUT_STD_I2S_TAG, "Failed to alloc buffer!");
+      logErr("Failed to alloc buffer!");
     }
   }
   i2sOn = true;
