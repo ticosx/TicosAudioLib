@@ -31,11 +31,11 @@ class AudioOutputFS : public AudioOutput
   public:
     AudioOutputFS() {};
     ~AudioOutputFS() { if(filename) free(filename); };
-    virtual void setFilename(FS& fs, const char *name){if (filename) free(filename);filesystem = &fs;filename = strdup(name);};
+    virtual void setFilename(fs::FS& fs, const char *name){if (filename) free(filename);filesystem = &fs;filename = strdup(name);};
 
   protected:
-    FS *filesystem;
-    File f;
+    fs::FS *filesystem;
+    fs::File f;
     char *filename;
 
 };

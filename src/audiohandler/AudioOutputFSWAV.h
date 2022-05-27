@@ -35,7 +35,7 @@ class AudioOutputFSWAV : public AudioOutputFS
     virtual bool consumeSample(int16_t sample[2]) override;
     virtual bool stop() override;
     virtual void flush() override;
-    virtual void setFilename(FS& fs, const char *name);
+    virtual void setFilename(fs::FS& fs, const char *name);
 
   private:
     uint8_t *buff = NULL;
