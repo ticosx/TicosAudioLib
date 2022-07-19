@@ -107,6 +107,7 @@ bool MediaPlayer::pause()
 {
   if(state == PLAYING){
     //Only meaningful in playing state
+    output->stop();
     state = PAUSED;
     return true;
   }
@@ -117,6 +118,7 @@ bool MediaPlayer::resume()
 {
   if(state == PAUSED){
     //Resume play when paused
+    output->begin();
     state = PLAYING;
     return true;
   }
